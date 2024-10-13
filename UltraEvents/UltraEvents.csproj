@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +13,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -108,6 +111,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Events.cs" />
     <Compile Include="MonoBehaviours\BounceOffProjectiles.cs" />
     <Compile Include="MonoBehaviours\Effect.cs" />
@@ -130,6 +136,7 @@
     <Compile Include="MonoBehaviours\Effects\VirtualInsanityEffect.cs" />
     <Compile Include="MonoBehaviours\MoveAndTurn.cs" />
     <Compile Include="MonoBehaviours\RemoveOnUnseen.cs" />
+    <Compile Include="MonoBehaviours\ShaderApplier.cs" />
     <Compile Include="MonoBehaviours\Task.cs" />
     <Compile Include="MonoBehaviours\TaskManager.cs" />
     <Compile Include="MonoBehaviours\Tasks\KillEnemyTask.cs" />
@@ -138,6 +145,8 @@
     <Compile Include="Patches\EnemyDeathPatch.cs" />
     <Compile Include="Patches\GetStylePatch.cs" />
     <Compile Include="Patches\HurtPlayerPatch.cs" />
+    <Compile Include="Patches\OnPickUpTrigger.cs" />
+    <Compile Include="Patches\OnWeaponSwapTrigger.cs" />
     <Compile Include="Patches\ParryPatch.cs" />
     <Compile Include="Patches\SecretPatch.cs" />
     <Compile Include="Root.cs" />
@@ -145,10 +154,42 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ModUtils.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Jsons\Links.json" />
+    <EmbeddedResource Include="Bundles\upsidedown" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="MPfours\.x2mate.com-Mewing_GOAT.mp4" />
+    <EmbeddedResource Include="MPfours\Anakin has 50 million power.mp4" />
+    <EmbeddedResource Include="MPfours\copy_C518CA82-8D73-404B-B1DE-F8E239A90240.mp4" />
+    <EmbeddedResource Include="MPfours\Delivery_Dance.mp4" />
+    <EmbeddedResource Include="MPfours\dHtLXai-3SR-sJ-I.mp4" />
+    <EmbeddedResource Include="MPfours\Funky_Town.mp4" />
+    <EmbeddedResource Include="MPfours\how to touch grass.mp4" />
+    <EmbeddedResource Include="MPfours\ID_LIKE_TO_THANK_OUR_SPONSOR_RAID_SHADOW_LEGENDS_ID_LIKE_TO_THANK_OUR_SPONSOR_RAID_SHADOW_LEGEN.mp4" />
+    <EmbeddedResource Include="MPfours\ise_crem.mp4" />
+    <EmbeddedResource Include="MPfours\MemeFeedBot-167.mp4" />
+    <EmbeddedResource Include="MPfours\Minecraft_Live_2021__Introducing_new_mobs.mp4" />
+    <EmbeddedResource Include="MPfours\reUFa.mp4" />
+    <EmbeddedResource Include="MPfours\rise of kingdom ad #11.mp4" />
+    <EmbeddedResource Include="MPfours\The Weirdest Japanese Commercial %28Yes Milk%29.mp4" />
+    <EmbeddedResource Include="MPfours\v2_is_dead.mp4" />
+    <EmbeddedResource Include="MPfours\video_mar_11_7_54_05_am.mp4" />
+    <EmbeddedResource Include="MPfours\yeh.mp4" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "C:\Users\michi\AppData\Roaming\r2modmanPlus-local\ULTRAKILL\profiles\UltraEvents\BepInEx\plugins\$(TargetName)"
 xcopy /q/y/i "$(TargetPath)" "C:\Users\michi\AppData\Roaming\r2modmanPlus-local\ULTRAKILL\profiles\UltraEvents\BepInEx\plugins\$(TargetName)" /E /H /C</PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
 </Project>

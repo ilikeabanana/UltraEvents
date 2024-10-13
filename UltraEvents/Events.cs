@@ -31,24 +31,53 @@ namespace UltraEvents
         }
 
         // Token: 0x0600001E RID: 30 RVA: 0x000037EC File Offset: 0x000019EC
-        public bool IsChild(GameObject objectToCheck, GameObject parentObject)
+        private bool IsChild(GameObject objectToCheck, GameObject parentObject)
         {
-            Transform transform = parentObject.transform;
-            Transform transform2 = objectToCheck.transform;
+            // First, check if the objects are the same
+            if (objectToCheck == parentObject)
+            {
+                return true;
+            }
+
+            // Now, check the hierarchy
+            Transform transform2 = objectToCheck.transform.parent;
             while (transform2 != null)
             {
-                bool flag = transform2 == transform;
-                if (flag)
+                if (transform2 == parentObject)
                 {
                     return true;
                 }
                 transform2 = transform2.parent;
             }
+
             return false;
         }
+        public void SetDRank()
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                MonoSingleton<StyleHUD>.instance.DescendRank();
+            }
+            
+        }
+        public void UpsideDown()
+        {
+            if(UltraEventsPlugin.Instance.upsideDownMaterial.GetFloat("_Intensity") == 0)
+            {
+                UltraEventsPlugin.Instance.UpsideDown();
+                AnnounceEvent("Why is everything upside down?");
+            }
+            else
+            {
+                UltraEventsPlugin.Instance.ResetScreen();
+                AnnounceEvent("Yay everything normal!");
+            }
+            
+        }
+
 
         // Token: 0x0600001F RID: 31 RVA: 0x00003838 File Offset: 0x00001A38
-        public void AnnounceEvent(string message)
+        private void AnnounceEvent(string message)
         {
             bool flag = !UltraEventsPlugin.Instance.announceEvents.Value;
             if (!flag)
@@ -58,37 +87,39 @@ namespace UltraEvents
         }
 
         // Token: 0x06000020 RID: 32 RVA: 0x00003874 File Offset: 0x00001A74
-        public void MoveEverythingToRight()
+        public void MoveEverything()
         {
             float num = Random.Range(-1f, 1f);
             float num2 = Random.Range(-1f, 1f);
             float num3 = Random.Range(-1f, 1f);
-            Debug.Log(num.ToString() + " " + num2.ToString() + num3.ToString());
-            GameObject[] array = Resources.FindObjectsOfTypeAll<GameObject>();
-            GameObject[] array2 = array;
-            int i = 0;
-            while (i < array2.Length)
+            Debug.Log(num.ToString() + " " + num2.ToString() + " " + num3.ToString());
+
+            // Find objects only in the active scene instead of all resources
+            GameObject[] array = GameObject.FindObjectsOfType<GameObject>();
+
+            Vector3 movement = new Vector3(num, num2, num3).normalized;
+
+            for (int i = 0; i < array.Length; i++)
             {
-                GameObject gameObject = array2[i];
-                bool flag = gameObject.scene != SceneManager.GetActiveScene();
-                if (!flag)
+                GameObject gameObject = array[i];
+
+                // Ensure it's in the active scene
+                if (gameObject.scene == SceneManager.GetActiveScene())
                 {
-                    bool flag2 = this.IsChild(MonoSingleton<NewMovement>.Instance.gameObject, gameObject);
-                    if (!flag2)
+                    // Skip moving the player
+                    if (!IsChild(MonoSingleton<NewMovement>.Instance.gameObject, gameObject))
                     {
-                        Vector3 normalized = new Vector3(num, num2, num3).normalized;
-                        gameObject.transform.position += normalized;
-                        i++;
-                        continue;
+                        gameObject.transform.position += movement;
                     }
                 }
-                return;
             }
-            this.AnnounceEvent("i moved everything a lil");
+
+            this.AnnounceEvent("I moved everything a lil");
         }
 
+
         // Token: 0x06000021 RID: 33 RVA: 0x0000396C File Offset: 0x00001B6C
-        public void Ally()
+        public void MakeAlly()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -103,7 +134,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000022 RID: 34 RVA: 0x000039F8 File Offset: 0x00001BF8
-        public void nanoMachinesSon()
+        public void NanoMachinesSon()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -158,14 +189,14 @@ namespace UltraEvents
         }
 
         // Token: 0x06000024 RID: 36 RVA: 0x00003BFE File Offset: 0x00001DFE
-        public void AttachEverything()
+        public void EverythingAttractedToPlayer()
         {
             this.AnnounceEvent("Everything is now attracted to you");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<AttachEverythingToPlayer>();
         }
 
         // Token: 0x06000025 RID: 37 RVA: 0x00003C19 File Offset: 0x00001E19
-        public void NoRicoshotsVoid()
+        public void CoinsDontLikeYou()
         {
             this.AnnounceEvent("Coins don't like you anymore");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<NoRicoshots>();
@@ -181,7 +212,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000027 RID: 39 RVA: 0x00003C60 File Offset: 0x00001E60
-        public void CoinsAreNowNails()
+        public void NailsAreNowCoins()
         {
             this.AnnounceEvent("i turned every nail into a coin :P");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<NailToCoin>();
@@ -213,7 +244,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002A RID: 42 RVA: 0x00003D20 File Offset: 0x00001F20
-        public void ReadLol()
+        public void Read()
         {
             GameObject gameObject = new GameObject("red");
             ItemIdentifier itemIdentifier = gameObject.AddComponent<ItemIdentifier>();
@@ -222,42 +253,34 @@ namespace UltraEvents
             gameObject.AddComponent<Rigidbody>();
             gameObject.AddComponent<CheckForScroller>();
             Readable obj = gameObject.AddComponent<Readable>();
-            Type typeFromHandle = typeof(Readable);
-            FieldInfo field = typeFromHandle.GetField("content", BindingFlags.Instance | BindingFlags.NonPublic);
-            bool flag = field != null;
-            if (flag)
-            {
-                FieldInfo field2 = typeFromHandle.GetField("instantScan", BindingFlags.Instance | BindingFlags.NonPublic);
-                bool flag2 = field2 != null;
-                if (flag2)
-                {
-                    field2.SetValue(obj, true);
+            obj.instantScan = true;
+
+
                     List<string> list = new List<string>
                     {
                         "You like reading, right?",
-                        "Reading is fun!",
-                        "Books are cool!",
-                        "Are you a bookworm?",
-                        "Reading expands the mind.",
-                        "What's your favorite book genre?",
-                        "Reading is a great way to learn.",
-                        "Books take you on adventures."
+                        "Imagine the lore implications i could put in this book.",
+                        "<b>TEXT SCRAMBLED - BRAIN CELL COUNT: DIMINISHING</b>\r\n\r\ni mean bruhhh \"gabriel yeeted minos, like, seriously. dude’s skin was all ripped up, blood was spilling everywhere, and we were all like, “uh, what now?!” ‘Justice,’ gabriel flexed, all righteous and stuff, while minos is just there on the floor, screaming his head off. ‘The Lord's vibes, bro,’ gabriel shouted. we just stood there like, ‘is this even real life?’ minos was not having it, flailing like crazy, still yelling, ‘nah, i ain’t about this godly nonsense!",
+                        "<color=red>THIS IS THE ONLY WAY IT COULD HAVE ENDED, GYATT!\r\n\r\nWAR NO LONGER NEEDED; IT'S ULTIMATE PRACTITIONER. MAN CRUSHED UNDER THE WHEELS OF A MACHINE, CREATED TO CREATE THE MACHINE, CREATED TO CRUSH THE MACHINE. SAMSARA OF CUT SINEW AND CRUSHED BONE. DEATH WITHOUT LIFE. NULL OUROBOROS. ALL THAT REMAINED IS WAR WITHOUT REASON, SKIBIDI!\r\n\r\nA MAGNUM OPUS, BRO. A COLD TOWER OF STEEL. A MACHINE BUILT TO END WAR IS ALWAYS A MACHINE BUILT TO CONTINUE WAR. YOU WERE BEAUTIFUL, OUTSTRETCHED LIKE ANTENNAS TO HEAVEN, NO CAP! YOU WERE BEYOND YOUR CREATORS. YOU REACHED FOR GOD, AND YOU FELL HARD, NO RIZZ. NONE WERE LEFT TO SPEAK YOUR EULOGY. NO FINAL WORDS, NO CONCLUDING STATEMENT. NO POINT. PERFECT CLOSURE, LIKE A SIGMA MALE IN THE COLD OF NIGHT!\r\n\r\nT H I S I S T H E O N L Y W A Y I T S H O U L D H A V E E N D E D, BRUH! </color>\r\n\r\nThe pages of the book are blank, just like my social life.</color>",
+                        "Is that Minos Prime",
+                        "I be Ultrakillin",
+                        "Fun fact: im real",
+                        "Why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why why "
                     };
-                    field.SetValue(obj, list[Random.Range(0, list.Count)]);
+                    obj.content = list[Random.Range(0, list.Count)];
                     MonoSingleton<PlayerUtilities>.Instance.ForceHoldObject(itemIdentifier);
-                }
-            }
+            
         }
 
         // Token: 0x0600002B RID: 43 RVA: 0x00003E55 File Offset: 0x00002055
-        public void BulletsAfraidNow()
+        public void BulletsAfraidOfEnemies()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<BulletsAfraidEnemies>();
             this.AnnounceEvent("Bullets are afraid of enemies now");
         }
 
         // Token: 0x0600002C RID: 44 RVA: 0x00003E70 File Offset: 0x00002070
-        public void BulletsExplodeNow()
+        public void BulletsExplode()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<ExplodingBulletsEffect>();
             this.AnnounceEvent("Bullets now explode");
@@ -324,7 +347,7 @@ namespace UltraEvents
             }
             catch (Exception ex)
             {
-                this.AnnounceEvent(ex.Message);
+                UltraEventsPlugin.Instance.UseRandomEvent();
             }
         }
 
@@ -350,7 +373,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000031 RID: 49 RVA: 0x00004198 File Offset: 0x00002398
-        public void AddRBRandomObjects()
+        public void AddGravityToRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
             int value = UltraEventsPlugin.Instance.maxAmountOfDeletedOjects.Value;
@@ -369,7 +392,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000032 RID: 50 RVA: 0x00004256 File Offset: 0x00002456
-        public void PixelizeScreen()
+        public void GoGoGadgetPixelReducer()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<PixelReducer>();
             this.AnnounceEvent("go go gadget pixel reducer!");
@@ -397,7 +420,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000034 RID: 52 RVA: 0x0000434C File Offset: 0x0000254C
-        public void OpenRandomLaLink()
+        public void OpenRandomLink()
         {
             string directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string text = Path.Combine(directoryName, "JSONFiles");
@@ -423,13 +446,13 @@ namespace UltraEvents
                 {
                     string text2 = File.ReadAllText(text + "/" + UltraEventsPlugin.Instance.jsonFilePath);
                     UltraEventsPlugin.Instance.links = JsonConvert.DeserializeObject<List<UltraEventsPlugin.LinkData>>(text2);
-                    this.OpenRandomLink();
+                    this.OpenRandomLaLink();
                 }
             }
         }
 
         // Token: 0x06000035 RID: 53 RVA: 0x000043FC File Offset: 0x000025FC
-        public void OpenRandomLink()
+        private void OpenRandomLaLink()
         {
             bool flag = UltraEventsPlugin.Instance.links.Count > 0;
             if (flag)
@@ -458,7 +481,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000038 RID: 56 RVA: 0x00004490 File Offset: 0x00002690
-        public void DupeAllEnemy()
+        public void DupeAllEnemies()
         {
             this.AnnounceEvent("ever heard of mitosis?");
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -511,7 +534,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003C RID: 60 RVA: 0x000046E1 File Offset: 0x000028E1
-        public IEnumerator LoadCatImage()
+        private IEnumerator LoadCatImage()
         {
             using (UnityWebRequest www = UnityWebRequest.Get(UltraEventsPlugin.Instance.apiUrl))
             {
@@ -601,7 +624,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003F RID: 63 RVA: 0x00004780 File Offset: 0x00002980
-        public void LoadRandomVideo(string[] videoFiles, string folderPath)
+        private void LoadRandomVideo(string[] videoFiles, string folderPath)
         {
             bool flag = videoFiles.Length == 0;
             if (flag)
@@ -619,7 +642,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000040 RID: 64 RVA: 0x00004804 File Offset: 0x00002A04
-        public void LoadVideo(string path, Canvas canvas)
+        private void LoadVideo(string path, Canvas canvas)
         {
             GameObject videoDisplayObject = new GameObject("VideoDisplay");
             videoDisplayObject.transform.SetParent(canvas.transform, false);
@@ -660,7 +683,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000041 RID: 65 RVA: 0x00004A29 File Offset: 0x00002C29
-        public void OnVideoFinished(GameObject videoDisplayObject)
+        private void OnVideoFinished(GameObject videoDisplayObject)
         {
             Object.Destroy(videoDisplayObject);
         }
@@ -672,7 +695,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000043 RID: 67 RVA: 0x00004A41 File Offset: 0x00002C41
-        public void Dies()
+        public void KillPlayer()
         {
             this.AnnounceEvent("DIE");
             ModUtils.GetPlayerTransform().GetHurt(int.MaxValue, false, 1f, false, false, 0.35f, false);
@@ -704,7 +727,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000047 RID: 71 RVA: 0x00004B51 File Offset: 0x00002D51
-        public IEnumerator SwapCoroutine(GameObject object1, GameObject object2, float swapDuration)
+        private IEnumerator SwapCoroutine(GameObject object1, GameObject object2, float swapDuration)
         {
             Vector3 startPos = object1.transform.position;
             Vector3 startPos2 = object2.transform.position;
@@ -743,12 +766,12 @@ namespace UltraEvents
         // Token: 0x0600004A RID: 74 RVA: 0x00004C2A File Offset: 0x00002E2A
         public IEnumerator overTimeEvents(int amount)
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / 3.33333333333333333333333333333f);
             int num;
             for (int i = 0; i < amount; i = num + 1)
             {
                 UltraEventsPlugin.Instance.UseRandomEvent();
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / 10);
                 num = i;
             }
             UltraEventsPlugin.Instance.timer = UltraEventsPlugin.Instance.AmountOfTime.Value;
@@ -768,7 +791,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004C RID: 76 RVA: 0x00004CC4 File Offset: 0x00002EC4
-        public void GetRod()
+        public void GetFishingRod()
         {
             try
             {
@@ -800,7 +823,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004E RID: 78 RVA: 0x00004DE4 File Offset: 0x00002FE4
-        public void waer()
+        public void water()
         {
             this.AnnounceEvent("hello how are you? i am under the water");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<aboohwaer>();
@@ -904,14 +927,14 @@ namespace UltraEvents
         }
 
         // Token: 0x06000055 RID: 85 RVA: 0x000050E3 File Offset: 0x000032E3
-        public void SpawnItem()
+        public void PlushRain()
         {
             this.AnnounceEvent("Plush rain!!!!");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<PlushRain>();
         }
 
         // Token: 0x06000056 RID: 86 RVA: 0x00005100 File Offset: 0x00003300
-        public void AddRBRandomObject()
+        public void AddGravityToRandomObject()
         {
             List<GameObject> list = Object.FindObjectsOfType<GameObject>().ToList<GameObject>();
             GameObject gameObject = list[Random.Range(0, list.Count)];
@@ -929,7 +952,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000058 RID: 88 RVA: 0x0000518C File Offset: 0x0000338C
-        public void UseRandomInput()
+        public void FireGun()
         {
             this.AnnounceEvent("gonna fire your gun");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
@@ -1058,7 +1081,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005B RID: 91 RVA: 0x000054AC File Offset: 0x000036AC
-        public void KillAllEnemy()
+        public void KillAllEnemies()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -1070,7 +1093,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005C RID: 92 RVA: 0x0000553C File Offset: 0x0000373C
-        public void giveRandomWeapon()
+        public void ChooseRandomWeapon()
         {
             this.AnnounceEvent("Here let me choose for you");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
@@ -1133,7 +1156,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000062 RID: 98 RVA: 0x000057CC File Offset: 0x000039CC
-        public void TPEnemies()
+        public void TPEnemiesToPlayer()
         {
             this.AnnounceEvent("teleports behind you");
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();

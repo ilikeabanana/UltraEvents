@@ -37,6 +37,122 @@ namespace UltraEvents
 
         // Token: 0x04000007 RID: 7
         private const string VersionString = "1.0.0";
+        // Token: 0x04000009 RID: 9
+        public static bool AutomaticFireEffectActive;
+
+        // Token: 0x0400000A RID: 10
+        public GameObject EffectManager;
+
+        // Token: 0x0400000B RID: 11
+        public GameObject TaskManagerObject;
+
+        // Token: 0x0400000C RID: 12
+        private static readonly Harmony Harmony = new Harmony("com.michi.UltraEvents");
+
+        // Token: 0x0400000D RID: 13
+        public static ManualLogSource Log = new ManualLogSource("UltraEvents");
+
+        // Token: 0x0400000E RID: 14
+        public static List<GameObject> plushies = new List<GameObject>();
+
+        // Token: 0x0400000F RID: 15
+        public GameObject fishingCanvas;
+
+        // Token: 0x04000010 RID: 16
+        public Shader unlitShader;
+
+        // Token: 0x04000011 RID: 17
+        public float timer = 5f;
+
+        // Token: 0x04000012 RID: 18
+        public ConfigEntry<float> AmountOfTime;
+
+        // Token: 0x04000013 RID: 19
+        public ConfigEntry<int> maxAmountOfDeletedOjects;
+
+        // Token: 0x04000014 RID: 20
+        public ConfigEntry<bool> rmeoveEffects;
+        public ConfigEntry<bool> DebugThing;
+
+        // Token: 0x04000015 RID: 21
+        public ConfigEntry<bool> announceEvents;
+
+        // Token: 0x04000016 RID: 22
+        public ConfigEntry<bool> everyFewSeconds;
+
+        // Token: 0x04000017 RID: 23
+        public static ConfigEntry<bool> OnSecretReceived;
+
+        // Token: 0x04000018 RID: 24
+        public static ConfigEntry<bool> OnParry;
+
+        // Token: 0x04000019 RID: 25
+        public static ConfigEntry<bool> OnEnemyDeath;
+
+        // Token: 0x0400001A RID: 26
+        public static ConfigEntry<bool> GetHurt;
+
+        // Token: 0x0400001B RID: 27
+        public static ConfigEntry<bool> GetStyle;
+        public static ConfigEntry<bool> WeaponSwap;
+        public static ConfigEntry<bool> PickUp;
+        // Token: 0x0400001C RID: 28
+        public GameObject rot = null;
+
+        // Token: 0x0400001D RID: 29
+        public static GameObject WickedObject;
+
+        // Token: 0x0400001E RID: 30
+        public static Shader VertexLit;
+
+        // Token: 0x0400001F RID: 31
+        private string[] plushieKeys = new string[]
+        {
+            "DevPlushie (Jacob)",
+            "DevPlushie (Mako)",
+            "DevPlushie (HEALTH - Jake)",
+            "DevPlushie (Dalia)",
+            "DevPlushie",
+            "DevPlushie (Jericho)",
+            "DevPlushie (Meganeko)",
+            "DevPlushie (Tucker)",
+            "DevPlushie (BigRock)",
+            "DevPlushie (Dawg)",
+            "DevPlushie (Sam)",
+            "Mandy Levitating",
+            "DevPlushie (Cameron)",
+            "DevPlushie (Gianni)",
+            "DevPlushie (Salad)",
+            "DevPlushie (Mandy)",
+            "DevPlushie (Joy)",
+            "DevPlushie (Weyte)",
+            "DevPlushie (Heckteck)",
+            "DevPlushie (Hakita)",
+            "DevPlushie (Lenval)",
+            "DevPlushie (CabalCrow) Variant",
+            "DevPlushie (Quetzal)",
+            "DevPlushie (HEALTH - John)",
+            "Glasses",
+            "DevPlushie (PITR)",
+            "DevPlushie (HEALTH - BJ)",
+            "DevPlushie (Francis)",
+            "DevPlushie (Vvizard)",
+            "DevPlushie (Lucas)",
+            "DevPlushie (Scott)",
+            "DevPlushie (KGC)"
+        };
+
+        // Token: 0x0400005D RID: 93
+        public string jsonFilePath = "UltraEvents.Jsons.Links.json";
+
+        // Token: 0x0400005E RID: 94
+        public List<UltraEventsPlugin.LinkData> links = new List<UltraEventsPlugin.LinkData>();
+
+        // Token: 0x0400005F RID: 95
+        public string apiUrl = "https://api.thecatapi.com/v1/images/search?limit=1&breed_ids=beng&api_key=REPLACE_ME";
+
+        // Token: 0x04000060 RID: 96
+        public Renderer catRenderer;
         public static UltraEventsPlugin Instance { get; private set; }
         public static ConfigBuilder configBuilder { get; private set; }
         [Configgable(path: "Events Buttons", displayName: "Enable All Button")]
@@ -74,6 +190,21 @@ namespace UltraEvents
                 }
             }
         });
+        public ShaderApplier shaderApplier;
+        public Material upsideDownMaterial;
+
+
+        public void UpsideDown()
+        {
+            // Apply the upside-down effect
+            upsideDownMaterial.SetFloat("_Intensity", 1f);
+        }
+
+        public void ResetScreen()
+        {
+            // Remove the upside-down effect
+            upsideDownMaterial.SetFloat("_Intensity", 0f);
+        }
         // Token: 0x0600000D RID: 13 RVA: 0x000020D0 File Offset: 0x000002D0
         public void SetConfigs()
         {
@@ -83,11 +214,15 @@ namespace UltraEvents
             this.rmeoveEffects = base.Config.Bind<bool>("Values", "remove effects", true, "when this is disabled it wont remove any effects. (NOT RECOMMENDED DONT DO THIS VERY LAGGY!!!)");
             this.announceEvents = base.Config.Bind<bool>("Values", "announce events", true, "when this is disabled it wont announce what event itll activate no more");
             this.everyFewSeconds = base.Config.Bind<bool>("Triggers", "every few seconds", true, "every few seconds an event will trigger");
+            this.DebugThing = base.Config.Bind<bool>("Values", "Debug", true, "This is for the developer to see if events trigger correctly");
             UltraEventsPlugin.OnSecretReceived = base.Config.Bind<bool>("Triggers", "On Secret Found", false, "will trigger an event when you find a secret");
             UltraEventsPlugin.OnParry = base.Config.Bind<bool>("Triggers", "On Parry", false, "will trigger an event when you parry");
             UltraEventsPlugin.OnEnemyDeath = base.Config.Bind<bool>("Triggers", "On Enemy Death", false, "will trigger an event when you kill an enemy");
             UltraEventsPlugin.GetHurt = base.Config.Bind<bool>("Triggers", "On Get Hurt", false, "will trigger an event when you receive damage");
             UltraEventsPlugin.GetStyle = base.Config.Bind<bool>("Triggers", "On Get Style", false, "will trigger an event when you receive Style");
+            UltraEventsPlugin.WeaponSwap = base.Config.Bind<bool>("Triggers", "On Weapon Swap", false, "will trigger an event when you swap weapons");
+            UltraEventsPlugin.PickUp = base.Config.Bind<bool>("Triggers", "On Item Pick Up", false, "will trigger an event when grab an item");
+           
             base.Logger.LogInfo("loadedAllConfigs");
             configBuilder = new ConfigBuilder();
             configBuilder.BuildAll();
@@ -115,6 +250,8 @@ namespace UltraEvents
             UltraEventsPlugin.Harmony.PatchAll();
             this.unlitShader = Addressables.LoadAssetAsync<Shader>("Assets/Shaders/Main/ULTRAKILL-unlit.shader").WaitForCompletion();
             SceneManager.sceneLoaded += new UnityAction<Scene, LoadSceneMode>(this.SceneManager_sceneLoaded);
+            Shader leShader = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.upsidedown")).LoadAllAssets()[0] as Shader;
+            upsideDownMaterial = new Material(leShader);
         }
 
         // Token: 0x0600000F RID: 15 RVA: 0x00002B28 File Offset: 0x00000D28
@@ -144,6 +281,26 @@ namespace UltraEvents
             if (flag5)
             {
                 base.StartCoroutine(this.LoadLit());
+            }
+
+            // Set the initial intensity to 0 (normal view)
+            upsideDownMaterial.SetFloat("_Intensity", 0f);
+            GameObject gameObject = null;
+            foreach (object obj in MonoSingleton<CameraController>.Instance.transform)
+            {
+                Transform transform = (Transform)obj;
+                bool thflag = transform.name.ToLower().Contains("virtual");
+                if (thflag)
+                {
+                    gameObject = transform.gameObject;
+                    break;
+                }
+            }
+            bool thflag2 = gameObject == null;
+            if (!thflag2)
+            {
+                ShaderApplier shaderApplier = gameObject.AddComponent<ShaderApplier>();
+                shaderApplier.material = upsideDownMaterial;
             }
             base.Logger.LogInfo("no issues at all");
         }
@@ -385,7 +542,7 @@ namespace UltraEvents
         private void InitializeEvents()
         {
             var eventMethods = typeof(Events).GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Where(m => m.GetParameters().Length == 0);
+                .Where(m => m.GetParameters().Length == 0 && m.DeclaringType == typeof(Events));
 
             foreach (var method in eventMethods)
             {
@@ -406,123 +563,18 @@ namespace UltraEvents
 
             var randomEvent = enabledEvents[Random.Range(0, enabledEvents.Count)];
             Console.WriteLine($"Triggering event: {randomEvent.Key}");
+            if (DebugThing.Value)
+            {
+                MonoSingleton<HudMessageReceiver>.instance.SendHudMessage($"Triggering event: {randomEvent.Key}");
+            }
+
             randomEvent.Value.Method.Invoke(Theevents, null);
+
+            
+            
         }
 
-        // Token: 0x04000009 RID: 9
-        public static bool AutomaticFireEffectActive;
-
-        // Token: 0x0400000A RID: 10
-        public GameObject EffectManager;
-
-        // Token: 0x0400000B RID: 11
-        public GameObject TaskManagerObject;
-
-        // Token: 0x0400000C RID: 12
-        private static readonly Harmony Harmony = new Harmony("com.michi.UltraEvents");
-
-        // Token: 0x0400000D RID: 13
-        public static ManualLogSource Log = new ManualLogSource("UltraEvents");
-
-        // Token: 0x0400000E RID: 14
-        public static List<GameObject> plushies = new List<GameObject>();
-
-        // Token: 0x0400000F RID: 15
-        public GameObject fishingCanvas;
-
-        // Token: 0x04000010 RID: 16
-        public Shader unlitShader;
-
-        // Token: 0x04000011 RID: 17
-        public float timer = 5f;
-
-        // Token: 0x04000012 RID: 18
-        public ConfigEntry<float> AmountOfTime;
-
-        // Token: 0x04000013 RID: 19
-        public ConfigEntry<int> maxAmountOfDeletedOjects;
-
-        // Token: 0x04000014 RID: 20
-        public ConfigEntry<bool> rmeoveEffects;
-
-        // Token: 0x04000015 RID: 21
-        public ConfigEntry<bool> announceEvents;
-
-        // Token: 0x04000016 RID: 22
-        public ConfigEntry<bool> everyFewSeconds;
-
-        // Token: 0x04000017 RID: 23
-        public static ConfigEntry<bool> OnSecretReceived;
-
-        // Token: 0x04000018 RID: 24
-        public static ConfigEntry<bool> OnParry;
-
-        // Token: 0x04000019 RID: 25
-        public static ConfigEntry<bool> OnEnemyDeath;
-
-        // Token: 0x0400001A RID: 26
-        public static ConfigEntry<bool> GetHurt;
-
-        // Token: 0x0400001B RID: 27
-        public static ConfigEntry<bool> GetStyle;
-
-        // Token: 0x0400001C RID: 28
-        public GameObject rot = null;
-
-        // Token: 0x0400001D RID: 29
-        public static GameObject WickedObject;
-
-        // Token: 0x0400001E RID: 30
-        public static Shader VertexLit;
-
-        // Token: 0x0400001F RID: 31
-        private string[] plushieKeys = new string[]
-        {
-            "DevPlushie (Jacob)",
-            "DevPlushie (Mako)",
-            "DevPlushie (HEALTH - Jake)",
-            "DevPlushie (Dalia)",
-            "DevPlushie",
-            "DevPlushie (Jericho)",
-            "DevPlushie (Meganeko)",
-            "DevPlushie (Tucker)",
-            "DevPlushie (BigRock)",
-            "DevPlushie (Dawg)",
-            "DevPlushie (Sam)",
-            "Mandy Levitating",
-            "DevPlushie (Cameron)",
-            "DevPlushie (Gianni)",
-            "DevPlushie (Salad)",
-            "DevPlushie (Mandy)",
-            "DevPlushie (Joy)",
-            "DevPlushie (Weyte)",
-            "DevPlushie (Heckteck)",
-            "DevPlushie (Hakita)",
-            "DevPlushie (Lenval)",
-            "DevPlushie (CabalCrow) Variant",
-            "DevPlushie (Quetzal)",
-            "DevPlushie (HEALTH - John)",
-            "Glasses",
-            "DevPlushie (PITR)",
-            "DevPlushie (HEALTH - BJ)",
-            "DevPlushie (Francis)",
-            "DevPlushie (Vvizard)",
-            "DevPlushie (Lucas)",
-            "DevPlushie (Scott)",
-            "DevPlushie (KGC)"
-        };
         
-        // Token: 0x0400005D RID: 93
-        public string jsonFilePath = "UltraEvents.Jsons.Links.json";
-
-        // Token: 0x0400005E RID: 94
-        public List<UltraEventsPlugin.LinkData> links = new List<UltraEventsPlugin.LinkData>();
-
-        // Token: 0x0400005F RID: 95
-        public string apiUrl = "https://api.thecatapi.com/v1/images/search?limit=1&breed_ids=beng&api_key=REPLACE_ME";
-
-        // Token: 0x04000060 RID: 96
-        public Renderer catRenderer;
 
         // Token: 0x02000027 RID: 39
         [Serializable]
