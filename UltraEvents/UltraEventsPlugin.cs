@@ -14,19 +14,11 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
-using UnityEngine.Video;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using UltraEvents.Utils;
 using UltraEvents.MonoBehaviours;
-using UltraEvents.MonoBehaviours.Effects;
-using UltraEvents.MonoBehaviours.Tasks;
-using Newtonsoft;
-using Newtonsoft.Json;
-using UnityEngine.Networking;
-using UnityEngine.UI;
-using static Configgy.UI.DynUI;
-using TMPro;
+using Configgy;
 
 namespace UltraEvents
 {
@@ -35,7 +27,7 @@ namespace UltraEvents
     [BepInPlugin(MyGUID, PluginName, VersionString)]
     public class UltraEventsPlugin : BaseUnityPlugin
     {
-        private Dictionary<string, (MethodInfo Method, ConfigEntry<bool> Config)> events = new Dictionary<string, (MethodInfo, ConfigEntry<bool>)>();
+        public static Dictionary<string, (MethodInfo Method, ConfigEntry<bool> Config)> events = new Dictionary<string, (MethodInfo, ConfigEntry<bool>)>();
         Events Theevents;
         // Token: 0x04000005 RID: 5
         private const string MyGUID = "com.michi.UltraEvents";
@@ -46,7 +38,42 @@ namespace UltraEvents
         // Token: 0x04000007 RID: 7
         private const string VersionString = "1.0.0";
         public static UltraEventsPlugin Instance { get; private set; }
+        public static ConfigBuilder configBuilder { get; private set; }
+        [Configgable(path: "Events Buttons", displayName: "Enable All Button")]
+        public static ConfigButton EnableAll = new ConfigButton(() =>
+        {
+            Log.LogInfo("hi");
+            foreach (var eventEntry in events)
+            {
+                Log.LogInfo(eventEntry.Key);
+                try
+                {
+                    eventEntry.Value.Config.Value = true;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to enable event {eventEntry.Key}: {e.Message}");
+                }
+            }
+        });
 
+        [Configgable(path: "Events Buttons", displayName: "Disable All Button")]
+        public static ConfigButton DisableAll = new ConfigButton(() =>
+        {
+            Log.LogInfo("hi");
+            foreach (var eventEntry in events)
+            {
+                Log.LogInfo(eventEntry.Key);
+                try
+                {
+                    eventEntry.Value.Config.Value = false;  // Should be false here for disabling
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to disable event {eventEntry.Key}: {e.Message}");
+                }
+            }
+        });
         // Token: 0x0600000D RID: 13 RVA: 0x000020D0 File Offset: 0x000002D0
         public void SetConfigs()
         {
@@ -62,8 +89,9 @@ namespace UltraEvents
             UltraEventsPlugin.GetHurt = base.Config.Bind<bool>("Triggers", "On Get Hurt", false, "will trigger an event when you receive damage");
             UltraEventsPlugin.GetStyle = base.Config.Bind<bool>("Triggers", "On Get Style", false, "will trigger an event when you receive Style");
             base.Logger.LogInfo("loadedAllConfigs");
-        
-         }
+            configBuilder = new ConfigBuilder();
+            configBuilder.BuildAll();
+        }
 
         // Token: 0x0600000E RID: 14 RVA: 0x00002A14 File Offset: 0x00000C14
         private void Awake()
@@ -356,7 +384,7 @@ namespace UltraEvents
         // Token: 0x0600001C RID: 28 RVA: 0x00003010 File Offset: 0x00001210
         private void InitializeEvents()
         {
-            var eventMethods = typeof(Events).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+            var eventMethods = typeof(Events).GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.GetParameters().Length == 0);
 
             foreach (var method in eventMethods)
@@ -483,190 +511,7 @@ namespace UltraEvents
             "DevPlushie (Scott)",
             "DevPlushie (KGC)"
         };
-        #region configs
-        // Token: 0x04000020 RID: 32
-        public ConfigEntry<bool> YEETEvent;
-
-        // Token: 0x04000021 RID: 33
-        public ConfigEntry<bool> TPEnemiesEvent;
-
-        // Token: 0x04000022 RID: 34
-        public ConfigEntry<bool> RemoveWeaponEvent;
-
-        // Token: 0x04000023 RID: 35
-        public ConfigEntry<bool> usePreviousWeaponEvent;
-
-        // Token: 0x04000024 RID: 36
-        public ConfigEntry<bool> KaboomEvent;
-
-        // Token: 0x04000025 RID: 37
-        public ConfigEntry<bool> DupeEnemyEvent;
-
-        // Token: 0x04000026 RID: 38
-        public ConfigEntry<bool> BuffEnemyEvent;
-
-        // Token: 0x04000027 RID: 39
-        public ConfigEntry<bool> giveRandomWeaponEvent;
-
-        // Token: 0x04000028 RID: 40
-        public ConfigEntry<bool> ReverseGravityEvent;
-
-        // Token: 0x04000029 RID: 41
-        public ConfigEntry<bool> KillRandomEnemyEvent;
-
-        // Token: 0x0400002A RID: 42
-        public ConfigEntry<bool> KillAllEnemyEvent;
-
-        // Token: 0x0400002B RID: 43
-        public ConfigEntry<bool> UseRandomInputEvent;
-
-        // Token: 0x0400002C RID: 44
-        public ConfigEntry<bool> RemoveRandomObjectEvent;
-
-        // Token: 0x0400002D RID: 45
-        public ConfigEntry<bool> AddRBRandomObjectEvent;
-
-        // Token: 0x0400002E RID: 46
-        public ConfigEntry<bool> SpawnItemEvent;
-
-        // Token: 0x0400002F RID: 47
-        public ConfigEntry<bool> SlowMotionEvent;
-
-        // Token: 0x04000030 RID: 48
-        public ConfigEntry<bool> GiveDualWieldEvent;
-
-        // Token: 0x04000031 RID: 49
-        public ConfigEntry<bool> SpawnRandomEnemyEvent;
-
-        // Token: 0x04000032 RID: 50
-        public ConfigEntry<bool> LagEvent;
-
-        // Token: 0x04000033 RID: 51
-        public ConfigEntry<bool> BlessthemAllEvent;
-
-        // Token: 0x04000034 RID: 52
-        public ConfigEntry<bool> waerEvent;
-
-        // Token: 0x04000035 RID: 53
-        public ConfigEntry<bool> noHealsEvent;
-
-        // Token: 0x04000036 RID: 54
-        public ConfigEntry<bool> GetRodEvent;
-
-        // Token: 0x04000037 RID: 55
-        public ConfigEntry<bool> TurnEnemyIntoPuppetEvent;
-
-        // Token: 0x04000038 RID: 56
-        public ConfigEntry<bool> MoreTroubleEvent;
-
-        // Token: 0x04000039 RID: 57
-        public ConfigEntry<bool> TeleportToEnemyEvent;
-
-        // Token: 0x0400003A RID: 58
-        public ConfigEntry<bool> SwapPosEvent;
-
-        // Token: 0x0400003B RID: 59
-        public ConfigEntry<bool> FastMotionEvent;
-
-        // Token: 0x0400003C RID: 60
-        public ConfigEntry<bool> SwitchArmEvent;
-
-        // Token: 0x0400003D RID: 61
-        public ConfigEntry<bool> RemoveStyleEvent;
-
-        // Token: 0x0400003E RID: 62
-        public ConfigEntry<bool> DiesEvent;
-
-        // Token: 0x0400003F RID: 63
-        public ConfigEntry<bool> FakeParryEvent;
-
-        // Token: 0x04000040 RID: 64
-        public ConfigEntry<bool> SpawnAdEvent;
-
-        // Token: 0x04000041 RID: 65
-        public ConfigEntry<bool> LoadCatEvent;
-
-        // Token: 0x04000042 RID: 66
-        public ConfigEntry<bool> AlakablamEvent;
-
-        // Token: 0x04000043 RID: 67
-        public ConfigEntry<bool> AirStrikeEvent;
-
-        // Token: 0x04000044 RID: 68
-        public ConfigEntry<bool> DupeAllEnemyEvent;
-
-        // Token: 0x04000045 RID: 69
-        public ConfigEntry<bool> RemoveStaminaEvent;
-
-        // Token: 0x04000046 RID: 70
-        public ConfigEntry<bool> RemoveChargeEvent;
-
-        // Token: 0x04000047 RID: 71
-        public ConfigEntry<bool> OpenRandomLaLinkEvent;
-
-        // Token: 0x04000048 RID: 72
-        public ConfigEntry<bool> RemoveRandomObjectsEvent;
-
-        // Token: 0x04000049 RID: 73
-        public ConfigEntry<bool> PixelizeScreenEvent;
-
-        // Token: 0x0400004A RID: 74
-        public ConfigEntry<bool> AddRBRandomObjectsEvent;
-
-        // Token: 0x0400004B RID: 75
-        public ConfigEntry<bool> GetTaskEvent;
-
-        // Token: 0x0400004C RID: 76
-        public ConfigEntry<bool> MakeEnemyOutOfSomethingEvent;
-
-        // Token: 0x0400004D RID: 77
-        public ConfigEntry<bool> InvisibleEnemiesEvent;
-
-        // Token: 0x0400004E RID: 78
-        public ConfigEntry<bool> SchizophreniaUpdateEvent;
-
-        // Token: 0x0400004F RID: 79
-        public ConfigEntry<bool> BulletsExplodeNowEvent;
-
-        // Token: 0x04000050 RID: 80
-        public ConfigEntry<bool> BulletsAfraidEnemiesEvent;
-
-        // Token: 0x04000051 RID: 81
-        public ConfigEntry<bool> ReadEvent;
-
-        // Token: 0x04000052 RID: 82
-        public ConfigEntry<bool> MoveEverythingEvent;
-
-        // Token: 0x04000053 RID: 83
-        private ConfigEntry<bool> BossBarForEveryoneEvent;
-
-        // Token: 0x04000054 RID: 84
-        private ConfigEntry<bool> OilUpEvent;
-
-        // Token: 0x04000055 RID: 85
-        public ConfigEntry<bool> NailToCoinEvent;
-
-        // Token: 0x04000056 RID: 86
-        public ConfigEntry<bool> AutomaticWeaponsEffectEvent;
-
-        // Token: 0x04000057 RID: 87
-        public ConfigEntry<bool> NoRicoshotsEvent;
-
-        // Token: 0x04000058 RID: 88
-        public ConfigEntry<bool> AttachEverythingToPlayerEvent;
-
-        // Token: 0x04000059 RID: 89
-        public ConfigEntry<bool> RulesOfNatureEvent;
-
-        // Token: 0x0400005A RID: 90
-        public ConfigEntry<bool> nanoMachinesSonEvent;
-
-        // Token: 0x0400005B RID: 91
-        public ConfigEntry<bool> AllyEvent;
-
-        // Token: 0x0400005C RID: 92
-        public ConfigEntry<bool> SomethingWickedThisWayComesEvent;
-        #endregion
+        
         // Token: 0x0400005D RID: 93
         public string jsonFilePath = "UltraEvents.Jsons.Links.json";
 

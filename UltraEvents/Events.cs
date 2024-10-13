@@ -23,7 +23,7 @@ namespace UltraEvents
     public class Events : MonoBehaviour
     {
         // Token: 0x0600001D RID: 29 RVA: 0x000037CF File Offset: 0x000019CF
-        private void SomethingWickedThisWayComesVoid()
+        public void SomethingWickedThisWayComesVoid()
         {
             this.AnnounceEvent("Something wicked this way comes");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<SomethingWickedThisWayComes>();
@@ -58,7 +58,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000020 RID: 32 RVA: 0x00003874 File Offset: 0x00001A74
-        private void MoveEverythingToRight()
+        public void MoveEverythingToRight()
         {
             float num = Random.Range(-1f, 1f);
             float num2 = Random.Range(-1f, 1f);
@@ -88,7 +88,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000021 RID: 33 RVA: 0x0000396C File Offset: 0x00001B6C
-        private void Ally()
+        public void Ally()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -103,7 +103,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000022 RID: 34 RVA: 0x000039F8 File Offset: 0x00001BF8
-        private void nanoMachinesSon()
+        public void nanoMachinesSon()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -127,7 +127,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000023 RID: 35 RVA: 0x00003AD8 File Offset: 0x00001CD8
-        private void RulesOfNature()
+        public void RulesOfNature()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -158,21 +158,21 @@ namespace UltraEvents
         }
 
         // Token: 0x06000024 RID: 36 RVA: 0x00003BFE File Offset: 0x00001DFE
-        private void AttachEverything()
+        public void AttachEverything()
         {
             this.AnnounceEvent("Everything is now attracted to you");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<AttachEverythingToPlayer>();
         }
 
         // Token: 0x06000025 RID: 37 RVA: 0x00003C19 File Offset: 0x00001E19
-        private void NoRicoshotsVoid()
+        public void NoRicoshotsVoid()
         {
             this.AnnounceEvent("Coins don't like you anymore");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<NoRicoshots>();
         }
 
         // Token: 0x06000026 RID: 38 RVA: 0x00003C34 File Offset: 0x00001E34
-        private void AutomaticWeapons()
+        public void AutomaticWeapons()
         {
             UltraEventsPlugin.Log.LogInfo("full auto");
             
@@ -181,14 +181,14 @@ namespace UltraEvents
         }
 
         // Token: 0x06000027 RID: 39 RVA: 0x00003C60 File Offset: 0x00001E60
-        private void CoinsAreNowNails()
+        public void CoinsAreNowNails()
         {
             this.AnnounceEvent("i turned every nail into a coin :P");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<NailToCoin>();
         }
 
         // Token: 0x06000028 RID: 40 RVA: 0x00003C7C File Offset: 0x00001E7C
-        private void BossBarForEveryone()
+        public void BossBarForEveryone()
         {
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
             foreach (EnemyIdentifier enemyIdentifier in array)
@@ -199,7 +199,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000029 RID: 41 RVA: 0x00003CC0 File Offset: 0x00001EC0
-        private void OilUp()
+        public void OilUp()
         {
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
             foreach (EnemyIdentifier enemyIdentifier in array)
@@ -213,7 +213,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002A RID: 42 RVA: 0x00003D20 File Offset: 0x00001F20
-        private void ReadLol()
+        public void ReadLol()
         {
             GameObject gameObject = new GameObject("red");
             ItemIdentifier itemIdentifier = gameObject.AddComponent<ItemIdentifier>();
@@ -250,34 +250,34 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002B RID: 43 RVA: 0x00003E55 File Offset: 0x00002055
-        private void BulletsAfraidNow()
+        public void BulletsAfraidNow()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<BulletsAfraidEnemies>();
             this.AnnounceEvent("Bullets are afraid of enemies now");
         }
 
         // Token: 0x0600002C RID: 44 RVA: 0x00003E70 File Offset: 0x00002070
-        private void BulletsExplodeNow()
+        public void BulletsExplodeNow()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<ExplodingBulletsEffect>();
             this.AnnounceEvent("Bullets now explode");
         }
 
         // Token: 0x0600002D RID: 45 RVA: 0x00003E8B File Offset: 0x0000208B
-        private void SchizophreniaUpdate()
+        public void SchizophreniaUpdate()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<sSchizophreniaUpdateEffect>();
         }
 
         // Token: 0x0600002E RID: 46 RVA: 0x00003E9A File Offset: 0x0000209A
-        private void InvisibleEnemies()
+        public void InvisibleEnemies()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InvisEnemies>();
             this.AnnounceEvent("Enemies are now invisible");
         }
 
         // Token: 0x0600002F RID: 47 RVA: 0x00003EB8 File Offset: 0x000020B8
-        private void makeEnemyOutOfSomething()
+        public void makeEnemyOutOfSomething()
         {
             try
             {
@@ -329,7 +329,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000030 RID: 48 RVA: 0x00004134 File Offset: 0x00002334
-        private void GiveTask()
+        public void GiveTask()
         {
             int num = Random.Range(0, 2);
             int num2 = num;
@@ -350,7 +350,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000031 RID: 49 RVA: 0x00004198 File Offset: 0x00002398
-        private void AddRBRandomObjects()
+        public void AddRBRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
             int value = UltraEventsPlugin.Instance.maxAmountOfDeletedOjects.Value;
@@ -369,14 +369,14 @@ namespace UltraEvents
         }
 
         // Token: 0x06000032 RID: 50 RVA: 0x00004256 File Offset: 0x00002456
-        private void PixelizeScreen()
+        public void PixelizeScreen()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<PixelReducer>();
             this.AnnounceEvent("go go gadget pixel reducer!");
         }
 
         // Token: 0x06000033 RID: 51 RVA: 0x00004274 File Offset: 0x00002474
-        private void RemoveRandomObjects()
+        public void RemoveRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
             int value = UltraEventsPlugin.Instance.maxAmountOfDeletedOjects.Value;
@@ -397,7 +397,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000034 RID: 52 RVA: 0x0000434C File Offset: 0x0000254C
-        private void OpenRandomLaLink()
+        public void OpenRandomLaLink()
         {
             string directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string text = Path.Combine(directoryName, "JSONFiles");
@@ -429,7 +429,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000035 RID: 53 RVA: 0x000043FC File Offset: 0x000025FC
-        private void OpenRandomLink()
+        public void OpenRandomLink()
         {
             bool flag = UltraEventsPlugin.Instance.links.Count > 0;
             if (flag)
@@ -444,21 +444,21 @@ namespace UltraEvents
         }
 
         // Token: 0x06000036 RID: 54 RVA: 0x00004456 File Offset: 0x00002656
-        private void RemoveCharge()
+        public void RemoveCharge()
         {
             this.AnnounceEvent("no charge?");
             MonoSingleton<WeaponCharges>.Instance.raicharge = 0f;
         }
 
         // Token: 0x06000037 RID: 55 RVA: 0x00004474 File Offset: 0x00002674
-        private void RemoveStamina()
+        public void RemoveStamina()
         {
             this.AnnounceEvent("no stamina?");
             ModUtils.GetPlayerTransform().EmptyStamina();
         }
 
         // Token: 0x06000038 RID: 56 RVA: 0x00004490 File Offset: 0x00002690
-        private void DupeAllEnemy()
+        public void DupeAllEnemy()
         {
             this.AnnounceEvent("ever heard of mitosis?");
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -471,7 +471,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000039 RID: 57 RVA: 0x00004550 File Offset: 0x00002750
-        private void AirStrike()
+        public void AirStrike()
         {
             this.AnnounceEvent("By the magic of the angels. I cast thee away");
             VirtueInsignia virtueInsignia = Resources.FindObjectsOfTypeAll<VirtueInsignia>()[0];
@@ -482,7 +482,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003A RID: 58 RVA: 0x000045A4 File Offset: 0x000027A4
-        private void Alakablam()
+        public void Alakablam()
         {
             this.AnnounceEvent("Alakablam");
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -498,7 +498,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003B RID: 59 RVA: 0x0000466C File Offset: 0x0000286C
-        private void LoadCat()
+        public void LoadCat()
         {
             this.AnnounceEvent("Spawn cat");
             GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -511,7 +511,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003C RID: 60 RVA: 0x000046E1 File Offset: 0x000028E1
-        private IEnumerator LoadCatImage()
+        public IEnumerator LoadCatImage()
         {
             using (UnityWebRequest www = UnityWebRequest.Get(UltraEventsPlugin.Instance.apiUrl))
             {
@@ -545,7 +545,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003D RID: 61 RVA: 0x000046F0 File Offset: 0x000028F0
-        private IEnumerator LoadImageTexture(string url)
+        public IEnumerator LoadImageTexture(string url)
         {
             using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
             {
@@ -579,7 +579,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003E RID: 62 RVA: 0x00004708 File Offset: 0x00002908
-        private void SpawnAd()
+        public void SpawnAd()
         {
             string directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string text = Path.Combine(directoryName, "Videos");
@@ -601,7 +601,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003F RID: 63 RVA: 0x00004780 File Offset: 0x00002980
-        private void LoadRandomVideo(string[] videoFiles, string folderPath)
+        public void LoadRandomVideo(string[] videoFiles, string folderPath)
         {
             bool flag = videoFiles.Length == 0;
             if (flag)
@@ -619,7 +619,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000040 RID: 64 RVA: 0x00004804 File Offset: 0x00002A04
-        private void LoadVideo(string path, Canvas canvas)
+        public void LoadVideo(string path, Canvas canvas)
         {
             GameObject videoDisplayObject = new GameObject("VideoDisplay");
             videoDisplayObject.transform.SetParent(canvas.transform, false);
@@ -660,26 +660,26 @@ namespace UltraEvents
         }
 
         // Token: 0x06000041 RID: 65 RVA: 0x00004A29 File Offset: 0x00002C29
-        private void OnVideoFinished(GameObject videoDisplayObject)
+        public void OnVideoFinished(GameObject videoDisplayObject)
         {
             Object.Destroy(videoDisplayObject);
         }
 
         // Token: 0x06000042 RID: 66 RVA: 0x00004A33 File Offset: 0x00002C33
-        private void FakeParry()
+        public void FakeParry()
         {
             MonoSingleton<TimeController>.Instance.ParryFlash();
         }
 
         // Token: 0x06000043 RID: 67 RVA: 0x00004A41 File Offset: 0x00002C41
-        private void Dies()
+        public void Dies()
         {
             this.AnnounceEvent("DIE");
             ModUtils.GetPlayerTransform().GetHurt(int.MaxValue, false, 1f, false, false, 0.35f, false);
         }
 
         // Token: 0x06000044 RID: 68 RVA: 0x00004A70 File Offset: 0x00002C70
-        private void RemoveStyle()
+        public void RemoveStyle()
         {
             this.AnnounceEvent("im gonna take some style points real quick");
             int num = Random.Range(0, MonoSingleton<StatsManager>.Instance.stylePoints);
@@ -687,14 +687,14 @@ namespace UltraEvents
         }
 
         // Token: 0x06000045 RID: 69 RVA: 0x00004AB0 File Offset: 0x00002CB0
-        private void SwitchArm()
+        public void SwitchArm()
         {
             FistControl fistControl = Object.FindObjectOfType<FistControl>();
             fistControl.ScrollArm();
         }
 
         // Token: 0x06000046 RID: 70 RVA: 0x00004ACC File Offset: 0x00002CCC
-        private void SwapPos()
+        public void SwapPos()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
             GameObject gameObject = list[Random.Range(0, list.Count)].gameObject;
@@ -704,7 +704,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000047 RID: 71 RVA: 0x00004B51 File Offset: 0x00002D51
-        private IEnumerator SwapCoroutine(GameObject object1, GameObject object2, float swapDuration)
+        public IEnumerator SwapCoroutine(GameObject object1, GameObject object2, float swapDuration)
         {
             Vector3 startPos = object1.transform.position;
             Vector3 startPos2 = object2.transform.position;
@@ -723,7 +723,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000048 RID: 72 RVA: 0x00004B78 File Offset: 0x00002D78
-        private void TeleportToEnemy()
+        public void TeleportToEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -733,7 +733,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000049 RID: 73 RVA: 0x00004C01 File Offset: 0x00002E01
-        private void MoreTrouble()
+        public void MoreTrouble()
         {
             base.StopCoroutine("overTimeEvents");
             this.AnnounceEvent("prepare for trouble. And make it double!");
@@ -741,7 +741,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004A RID: 74 RVA: 0x00004C2A File Offset: 0x00002E2A
-        private IEnumerator overTimeEvents(int amount)
+        public IEnumerator overTimeEvents(int amount)
         {
             yield return new WaitForSeconds(1.5f);
             int num;
@@ -756,7 +756,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004B RID: 75 RVA: 0x00004C40 File Offset: 0x00002E40
-        private void TurnEnemyIntoPuppet()
+        public void TurnEnemyIntoPuppet()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -768,7 +768,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004C RID: 76 RVA: 0x00004CC4 File Offset: 0x00002EC4
-        private void GetRod()
+        public void GetRod()
         {
             try
             {
@@ -788,7 +788,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004D RID: 77 RVA: 0x00004D50 File Offset: 0x00002F50
-        private void noHeals()
+        public void noHeals()
         {
             this.AnnounceEvent("no heals?");
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -800,28 +800,28 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004E RID: 78 RVA: 0x00004DE4 File Offset: 0x00002FE4
-        private void waer()
+        public void waer()
         {
             this.AnnounceEvent("hello how are you? i am under the water");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<aboohwaer>();
         }
 
         // Token: 0x0600004F RID: 79 RVA: 0x00004DFF File Offset: 0x00002FFF
-        private void BlessthemAll()
+        public void BlessthemAll()
         {
             this.AnnounceEvent("enemies now are protected by god");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<BlessAll>();
         }
 
         // Token: 0x06000050 RID: 80 RVA: 0x00004E1A File Offset: 0x0000301A
-        private void Lag()
+        public void Lag()
         {
             this.AnnounceEvent("your ping is so high");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<Lagging>();
         }
 
         // Token: 0x06000051 RID: 81 RVA: 0x00004E38 File Offset: 0x00003038
-        private void SpawnRandomEnemy()
+        public void SpawnRandomEnemy()
         {
             List<SpawnableObject> list = Resources.FindObjectsOfTypeAll<SpawnableObject>().ToList<SpawnableObject>();
             list.RemoveAll((SpawnableObject x) => x.spawnableObjectType != SpawnableObject.SpawnableObjectDataType.Enemy);
@@ -831,7 +831,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000052 RID: 82 RVA: 0x00004EC4 File Offset: 0x000030C4
-        private void GiveDualWield()
+        public void GiveDualWield()
         {
             this.AnnounceEvent("its dual wielding time!!! *dual wields all over the place*");
             int num = Random.Range(1, 10);
@@ -890,28 +890,28 @@ namespace UltraEvents
         }
 
         // Token: 0x06000053 RID: 83 RVA: 0x000050AD File Offset: 0x000032AD
-        private void SlowMotion()
+        public void SlowMotion()
         {
             this.AnnounceEvent("wow this is slow");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<Slowmotion>();
         }
 
         // Token: 0x06000054 RID: 84 RVA: 0x000050C8 File Offset: 0x000032C8
-        private void FastMotion()
+        public void FastMotion()
         {
             this.AnnounceEvent("wow this is Fast");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<Fastmotion>();
         }
 
         // Token: 0x06000055 RID: 85 RVA: 0x000050E3 File Offset: 0x000032E3
-        private void SpawnItem()
+        public void SpawnItem()
         {
             this.AnnounceEvent("Plush rain!!!!");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<PlushRain>();
         }
 
         // Token: 0x06000056 RID: 86 RVA: 0x00005100 File Offset: 0x00003300
-        private void AddRBRandomObject()
+        public void AddRBRandomObject()
         {
             List<GameObject> list = Object.FindObjectsOfType<GameObject>().ToList<GameObject>();
             GameObject gameObject = list[Random.Range(0, list.Count)];
@@ -920,7 +920,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000057 RID: 87 RVA: 0x0000514C File Offset: 0x0000334C
-        private void RemoveRandomObject()
+        public void RemoveRandomObject()
         {
             List<GameObject> list = Object.FindObjectsOfType<GameObject>().ToList<GameObject>();
             GameObject gameObject = list[Random.Range(0, list.Count)];
@@ -929,7 +929,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000058 RID: 88 RVA: 0x0000518C File Offset: 0x0000338C
-        private void UseRandomInput()
+        public void UseRandomInput()
         {
             this.AnnounceEvent("gonna fire your gun");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
@@ -1033,7 +1033,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000059 RID: 89 RVA: 0x000053DC File Offset: 0x000035DC
-        private void ReverseGravity()
+        public void ReverseGravity()
         {
             Physics.gravity *= -1f;
             bool flag = Physics.gravity.y > 0f;
@@ -1048,7 +1048,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005A RID: 90 RVA: 0x00005434 File Offset: 0x00003634
-        private void KillRandomEnemy()
+        public void KillRandomEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -1058,7 +1058,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005B RID: 91 RVA: 0x000054AC File Offset: 0x000036AC
-        private void KillAllEnemy()
+        public void KillAllEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -1070,7 +1070,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005C RID: 92 RVA: 0x0000553C File Offset: 0x0000373C
-        private void giveRandomWeapon()
+        public void giveRandomWeapon()
         {
             this.AnnounceEvent("Here let me choose for you");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
@@ -1079,7 +1079,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005D RID: 93 RVA: 0x00005588 File Offset: 0x00003788
-        private void BuffEnemy()
+        public void BuffEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -1089,7 +1089,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005E RID: 94 RVA: 0x00005600 File Offset: 0x00003800
-        private void DupeEnemy()
+        public void DupeEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
             list.RemoveAll((EnemyIdentifier x) => x.dead);
@@ -1100,7 +1100,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005F RID: 95 RVA: 0x000056A8 File Offset: 0x000038A8
-        private void Kaboom()
+        public void Kaboom()
         {
             this.AnnounceEvent("KABOOOOOOM");
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
@@ -1114,7 +1114,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000060 RID: 96 RVA: 0x00005740 File Offset: 0x00003940
-        private void usePreviousWeapon()
+        public void usePreviousWeapon()
         {
             this.AnnounceEvent("go back to the other weapon");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
@@ -1122,7 +1122,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000061 RID: 97 RVA: 0x00005784 File Offset: 0x00003984
-        private void RemoveWeapon()
+        public void RemoveWeapon()
         {
             this.AnnounceEvent("you dont need this right?");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
@@ -1133,7 +1133,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000062 RID: 98 RVA: 0x000057CC File Offset: 0x000039CC
-        private void TPEnemies()
+        public void TPEnemies()
         {
             this.AnnounceEvent("teleports behind you");
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
@@ -1144,7 +1144,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000063 RID: 99 RVA: 0x0000581E File Offset: 0x00003A1E
-        private void YEET()
+        public void YEET()
         {
             this.AnnounceEvent("welcome to space :O");
             ModUtils.GetPlayerTransform().LaunchFromPoint(ModUtils.GetPlayerTransform().transform.position, 50000000f, 1f);
