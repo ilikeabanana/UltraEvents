@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace UltraEvents.Utils
 {
@@ -9,6 +11,33 @@ namespace UltraEvents.Utils
         public static NewMovement GetPlayerTransform()
         {
             return MonoSingleton<NewMovement>.Instance;
+        }
+        public static List<EnemyIdentifier> GetEveryEnemy()
+        {
+            List<EnemyIdentifier> enemies = GameObject.FindObjectsOfType<EnemyIdentifier>().ToList();
+            return enemies != null ? enemies : new List<EnemyIdentifier>(); // Return an empty list if null
+        }
+
+        public static List<EnemyIdentifier> GetEveryEnemyThatAreAlive()
+        {
+            List<EnemyIdentifier> enemies = GetEveryEnemy();
+            if (enemies == null || enemies.Count == 0) return new List<EnemyIdentifier>(); // Safety check for null or empty list
+            enemies.RemoveAll((x) => x == null || x.dead); // Additional null check for each enemy
+            return enemies;
+        }
+
+        public static EnemyIdentifier getRandomEnemy()
+        {
+            List<EnemyIdentifier> enemies = GetEveryEnemy();
+            if (enemies == null || enemies.Count == 0) return null; // Check if the list is null or empty
+            return enemies[Random.Range(0, enemies.Count)];
+        }
+
+        public static EnemyIdentifier getRandomEnemyThatIsAlive()
+        {
+            List<EnemyIdentifier> enemies = GetEveryEnemyThatAreAlive();
+            if (enemies == null || enemies.Count == 0) return null; // Check if the list is null or empty
+            return enemies[Random.Range(0, enemies.Count)];
         }
 
         // Token: 0x06000067 RID: 103 RVA: 0x00005A08 File Offset: 0x00003C08

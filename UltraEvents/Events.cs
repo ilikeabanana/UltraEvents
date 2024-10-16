@@ -247,18 +247,51 @@ namespace UltraEvents
 
             this.AnnounceEvent("I moved everything a lil");
         }
+        public void SwapPlayerWithEnemy()
+        {
+            EnemyIdentifier enemy = ModUtils.getRandomEnemyThatIsAlive();
+            Vector3 enemyPos = enemy.transform.position;
+            enemy.transform.position = MonoSingleton<NewMovement>.instance.transform.position;
+            MonoSingleton<NewMovement>.instance.transform.position = enemyPos;
+        }
+        [EventDescription("Scales everything slightly")]
+        public void ScaleEverything()
+        {
+            float num = 0.1f;
+            float num2 = 0.1f;
+            float num3 = 0.1f;
+            Debug.Log(num.ToString() + " " + num2.ToString() + " " + num3.ToString());
 
+            // Find objects only in the active scene instead of all resources
+            GameObject[] array = GameObject.FindObjectsOfType<GameObject>();
+
+            Vector3 movement = new Vector3(num, num2, num3).normalized;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                GameObject gameObject = array[i];
+
+                // Ensure it's in the active scene
+                if (gameObject.scene == SceneManager.GetActiveScene())
+                {
+                    // Skip moving the player
+                    if (!IsChild(MonoSingleton<NewMovement>.Instance.gameObject, gameObject))
+                    {
+                        gameObject.transform.localScale += movement;
+                    }
+                }
+            }
+
+            this.AnnounceEvent("I moved scaled a lil");
+        }
 
         // Token: 0x06000021 RID: 33 RVA: 0x0000396C File Offset: 0x00001B6C
         [EventDescription("Turns a random enemy into your ally")]
         public void MakeAlly()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            bool flag = list.Count <= 0;
-            if (!flag)
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
+            if (enemyIdentifier != null)
             {
-                EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
                 enemyIdentifier.ignorePlayer = true;
                 enemyIdentifier.attackEnemies = true;
                 this.AnnounceEvent(enemyIdentifier.FullName + " is now your ally");
@@ -269,8 +302,7 @@ namespace UltraEvents
         [EventDescription("gives them a +2 damage buff and a +10 health buff")]
         public void NanoMachinesSon()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             bool flag = list.Count <= 0;
             if (!flag)
             {
@@ -294,12 +326,11 @@ namespace UltraEvents
         [EventDescription("makes an enemy 10 times bigger, and turns them into radiance 3")]
         public void RulesOfNature()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            bool flag = list.Count <= 0;
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
+            bool flag = enemyIdentifier == null;
             if (!flag)
             {
-                EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
+                
                 enemyIdentifier.gameObject.transform.localScale *= 10f;
                 enemyIdentifier.radianceTier += 3f;
                 enemyIdentifier.speedBuffModifier += 1f;
@@ -360,7 +391,7 @@ namespace UltraEvents
         [EventDescription("Gives a bossbar to every enemy")]
         public void BossBarForEveryone()
         {
-            EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
+            List<EnemyIdentifier> array = ModUtils.GetEveryEnemy();
             foreach (EnemyIdentifier enemyIdentifier in array)
             {
                 enemyIdentifier.gameObject.AddComponent<BossHealthBar>();
@@ -372,7 +403,7 @@ namespace UltraEvents
         [EventDescription("Makes every enemy oiled up")]
         public void OilUp()
         {
-            EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
+            List<EnemyIdentifier> array = ModUtils.GetEveryEnemy();
             foreach (EnemyIdentifier enemyIdentifier in array)
             {
                 for (int j = 0; j < 1000; j++)
@@ -387,7 +418,7 @@ namespace UltraEvents
         [EventDescription("Forces you to read a book (also removes the item you are currently holding")]
         public void Read()
         {
-            GameObject gameObject = new GameObject("red");
+            GameObject gameObject = new GameObject("read");
             ItemIdentifier itemIdentifier = gameObject.AddComponent<ItemIdentifier>();
             itemIdentifier.pickUpSound = new GameObject();
             itemIdentifier.itemType = ItemType.Readable;
@@ -499,10 +530,9 @@ namespace UltraEvents
         [EventDescription("Makes every enemy's weakpoint 3 times larger")]
         public void GiantHeads()
         {
-            EnemyIdentifier[] identifiers = FindObjectsOfType<EnemyIdentifier>();
-            foreach(EnemyIdentifier identifier in identifiers)
+            List<EnemyIdentifier> identifiers = ModUtils.GetEveryEnemyThatAreAlive();
+            foreach (EnemyIdentifier identifier in identifiers)
             {
-                if (identifier.dead) continue;
                 if (identifier.weakPoint != null)
                 {
                     identifier.weakPoint.transform.localScale *= 3;
@@ -530,8 +560,7 @@ namespace UltraEvents
         [EventDescription("Makes 2 enemies swap positions")]
         public void Swap2Enemies()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             if(list.Count > 2)
             {
                 EnemyIdentifier enemy1 = list[Random.Range(0, list.Count)];
@@ -557,8 +586,7 @@ namespace UltraEvents
         public void TinyEnemies()
         {
             //Kinda just like you tbh
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             foreach (EnemyIdentifier enemyIdentifier in list)
             {
                 enemyIdentifier.transform.localScale /= 2;
@@ -718,8 +746,7 @@ namespace UltraEvents
         public void DupeAllEnemies()
         {
             this.AnnounceEvent("ever heard of mitosis?");
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             foreach (EnemyIdentifier enemyIdentifier in list)
             {
                 EnemyIdentifier enemyIdentifier2 = Object.Instantiate<EnemyIdentifier>(enemyIdentifier, enemyIdentifier.transform.position, enemyIdentifier.transform.rotation);
@@ -744,8 +771,7 @@ namespace UltraEvents
         public void Alakablam()
         {
             this.AnnounceEvent("Alakablam");
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             VirtueInsignia virtueInsignia = Resources.FindObjectsOfTypeAll<VirtueInsignia>()[0];
             foreach (EnemyIdentifier enemyIdentifier in list)
             {
@@ -992,9 +1018,7 @@ namespace UltraEvents
         [EventDescription("Makes you teleport to a random enemy")]
         public void TeleportToEnemy()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
             ModUtils.GetPlayerTransform().transform.position = enemyIdentifier.transform.position;
             this.AnnounceEvent("teleports behind " + enemyIdentifier.gameObject.name);
         }
@@ -1027,9 +1051,7 @@ namespace UltraEvents
         [EventDescription("Turns a random enemy into a puppet (one of those blood enemies in 7-3")]
         public void TurnEnemyIntoPuppet()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
             enemyIdentifier.puppet = true;
             enemyIdentifier.PuppetSpawn();
             enemyIdentifier.dontCountAsKills = false;
@@ -1062,8 +1084,7 @@ namespace UltraEvents
         public void noHeals()
         {
             this.AnnounceEvent("no heals?");
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             foreach (EnemyIdentifier enemyIdentifier in list)
             {
                 enemyIdentifier.Sandify(false);
@@ -1334,9 +1355,7 @@ namespace UltraEvents
         [EventDescription("Kills a random enemy")]
         public void KillRandomEnemy()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
             this.AnnounceEvent("fuck you in particular " + enemyIdentifier.gameObject.name);
             enemyIdentifier.InstaKill();
         }
@@ -1368,9 +1387,7 @@ namespace UltraEvents
         [EventDescription("Buffs a random enemy")]
         public void BuffEnemy()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
             enemyIdentifier.BuffAll();
             this.AnnounceEvent("\"will you lose?\" \"nah id win\" -" + enemyIdentifier.gameObject.name);
         }
@@ -1379,9 +1396,7 @@ namespace UltraEvents
         [EventDescription("duplicates a random enemy")]
         public void DupeEnemy()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
-            EnemyIdentifier enemyIdentifier = list[Random.Range(0, list.Count)];
+            EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
             EnemyIdentifier enemyIdentifier2 = Object.Instantiate<EnemyIdentifier>(enemyIdentifier, enemyIdentifier.transform.position, enemyIdentifier.transform.rotation);
             enemyIdentifier2.transform.localScale = enemyIdentifier.transform.localScale;
             this.AnnounceEvent("i added another " + enemyIdentifier.enemyType.ToString());
@@ -1437,7 +1452,7 @@ namespace UltraEvents
         public void TPEnemiesToPlayer()
         {
             this.AnnounceEvent("teleports behind you");
-            EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
+            List<EnemyIdentifier> array = ModUtils.GetEveryEnemyThatAreAlive();
             foreach (EnemyIdentifier enemyIdentifier in array)
             {
                 enemyIdentifier.transform.position = ModUtils.GetPlayerTransform().transform.position;
