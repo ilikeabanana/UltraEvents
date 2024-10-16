@@ -561,11 +561,26 @@ namespace UltraEvents
             foreach (var method in eventMethods)
             {
                 string eventName = method.Name;
-                var configEntry = Config.Bind("Events", eventName, true, $"Enable or disable the {eventName}");
+
+                // Get the EventDescription attribute
+                var descriptionAttribute = method.GetCustomAttribute<EventDescriptionAttribute>();
+                string eventDescription = descriptionAttribute != null
+                    ? descriptionAttribute.Description
+                    : $"Enable or disable the {eventName}"; // Fallback description
+                if(descriptionAttribute != null)
+                {
+                    eventName = descriptionAttribute.Name != null ? descriptionAttribute.Name : method.Name;
+                }
+                
+                // Bind config for enabling/disabling the event
+                var configEntry = Config.Bind("Events", eventName, true, eventDescription);
+
+                // Store event method and config
                 events[eventName] = (method, configEntry);
             }
             Debug.Log(events.Count);
         }
+
 
         public void UseRandomEvent()
         {

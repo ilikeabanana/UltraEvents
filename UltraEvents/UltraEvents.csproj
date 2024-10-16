@@ -134,6 +134,7 @@
     <Publicize Include="Assembly-CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventDescriptionAttribute.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="MonoBehaviours\BounceOffProjectiles.cs" />
     <Compile Include="MonoBehaviours\Effect.cs" />

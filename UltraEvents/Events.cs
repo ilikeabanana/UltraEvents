@@ -24,6 +24,7 @@ namespace UltraEvents
     public class Events : MonoBehaviour
     {
         // Token: 0x0600001D RID: 29 RVA: 0x000037CF File Offset: 0x000019CF
+        [EventDescription("Spawns Something wicked")]
         public void SomethingWickedThisWayComesVoid()
         {
             this.AnnounceEvent("Something wicked this way comes");
@@ -53,6 +54,7 @@ namespace UltraEvents
 
             return false;
         }
+        [EventDescription("Puts you in a d-rank")]
         public void SetDRank()
         {
             for (int i = 0; i < 6; i++)
@@ -61,12 +63,14 @@ namespace UltraEvents
             }
             
         }
+        [EventDescription("Makes your screen upside down")]
         public void UpsideDown()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<UpsideDown>();
                 AnnounceEvent("Why is everything upside down?");
             
         }
+        [EventDescription("Shuffles your weapons")]
         public void ShuffleWeapons()
         {
             GunControl gunControl = MonoSingleton<GunControl>.instance;
@@ -118,11 +122,13 @@ namespace UltraEvents
 
             AnnounceEvent("Rearranged your weapons a bit");
         }
+        [EventDescription("Makes everything one hit")]
         public void OneHit()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<EverythingIsOneHit>();
             AnnounceEvent("Everything is one hit now");
         }
+        [EventDescription("Flashes your screen like in the beginning of 7-1")]
         public void Flash()
         {
             // Try to get the OptionsMenuToManager component and associated Canvas
@@ -193,7 +199,7 @@ namespace UltraEvents
                 Debug.LogError($"Error while trying to invoke Flash on the new FlashImage: {ex.Message}");
             }
         }
-
+        [EventDescription("Stops time for everything except you")]
         public void TimeStop()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<TimeStop>();
@@ -211,11 +217,12 @@ namespace UltraEvents
         }
 
         // Token: 0x06000020 RID: 32 RVA: 0x00003874 File Offset: 0x00001A74
+        [EventDescription("Moves everything slightly")]
         public void MoveEverything()
         {
-            float num = Random.Range(-1f, 1f);
-            float num2 = Random.Range(-1f, 1f);
-            float num3 = Random.Range(-1f, 1f);
+            float num = Random.Range(-0.1f, 0.1f);
+            float num2 = Random.Range(-0.1f, 0.1f);
+            float num3 = Random.Range(-0.1f, 0.1f);
             Debug.Log(num.ToString() + " " + num2.ToString() + " " + num3.ToString());
 
             // Find objects only in the active scene instead of all resources
@@ -243,6 +250,7 @@ namespace UltraEvents
 
 
         // Token: 0x06000021 RID: 33 RVA: 0x0000396C File Offset: 0x00001B6C
+        [EventDescription("Turns a random enemy into your ally")]
         public void MakeAlly()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -258,6 +266,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000022 RID: 34 RVA: 0x000039F8 File Offset: 0x00001BF8
+        [EventDescription("gives them a +2 damage buff and a +10 health buff")]
         public void NanoMachinesSon()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -282,6 +291,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000023 RID: 35 RVA: 0x00003AD8 File Offset: 0x00001CD8
+        [EventDescription("makes an enemy 10 times bigger, and turns them into radiance 3")]
         public void RulesOfNature()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -313,6 +323,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000024 RID: 36 RVA: 0x00003BFE File Offset: 0x00001DFE
+        [EventDescription("Every object that has gravity goes to you")]
         public void EverythingAttractedToPlayer()
         {
             this.AnnounceEvent("Everything is now attracted to you");
@@ -320,6 +331,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000025 RID: 37 RVA: 0x00003C19 File Offset: 0x00001E19
+        [EventDescription("Coins will kill you")]
         public void CoinsDontLikeYou()
         {
             this.AnnounceEvent("Coins don't like you anymore");
@@ -327,6 +339,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000026 RID: 38 RVA: 0x00003C34 File Offset: 0x00001E34
+        [EventDescription("Turns your weapons (especially the shotgun and rocketlauncher) into automatic weapons")]
         public void AutomaticWeapons()
         {
             UltraEventsPlugin.Log.LogInfo("full auto");
@@ -336,6 +349,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000027 RID: 39 RVA: 0x00003C60 File Offset: 0x00001E60
+        [EventDescription("Turns every nail (and saw) into a coin")]
         public void NailsAreNowCoins()
         {
             this.AnnounceEvent("i turned every nail into a coin :P");
@@ -343,6 +357,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000028 RID: 40 RVA: 0x00003C7C File Offset: 0x00001E7C
+        [EventDescription("Gives a bossbar to every enemy")]
         public void BossBarForEveryone()
         {
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
@@ -354,6 +369,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000029 RID: 41 RVA: 0x00003CC0 File Offset: 0x00001EC0
+        [EventDescription("Makes every enemy oiled up")]
         public void OilUp()
         {
             EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
@@ -368,6 +384,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002A RID: 42 RVA: 0x00003D20 File Offset: 0x00001F20
+        [EventDescription("Forces you to read a book (also removes the item you are currently holding")]
         public void Read()
         {
             GameObject gameObject = new GameObject("red");
@@ -397,6 +414,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002B RID: 43 RVA: 0x00003E55 File Offset: 0x00002055
+        [EventDescription("Bullets avoid enemies")]
         public void BulletsAfraidOfEnemies()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<BulletsAfraidEnemies>();
@@ -404,6 +422,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002C RID: 44 RVA: 0x00003E70 File Offset: 0x00002070
+        [EventDescription("Bullets explode")]
         public void BulletsExplode()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<ExplodingBulletsEffect>();
@@ -411,12 +430,14 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002D RID: 45 RVA: 0x00003E8B File Offset: 0x0000208B
+        [EventDescription("Every enemy that you dont see disappears")]
         public void SchizophreniaUpdate()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<sSchizophreniaUpdateEffect>();
         }
 
         // Token: 0x0600002E RID: 46 RVA: 0x00003E9A File Offset: 0x0000209A
+        [EventDescription("Turns every enemy invisible")]
         public void InvisibleEnemies()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InvisEnemies>();
@@ -424,6 +445,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600002F RID: 47 RVA: 0x00003EB8 File Offset: 0x000020B8
+        [EventDescription("Turns a random object into a random enemy")]
         public void makeEnemyOutOfSomething()
         {
             try
@@ -474,6 +496,7 @@ namespace UltraEvents
                 UltraEventsPlugin.Instance.UseRandomEvent();
             }
         }
+        [EventDescription("Makes every enemy's weakpoint 3 times larger")]
         public void GiantHeads()
         {
             EnemyIdentifier[] identifiers = FindObjectsOfType<EnemyIdentifier>();
@@ -487,20 +510,24 @@ namespace UltraEvents
             }
             AnnounceEvent("Everyone's got a big head now!");
         }
+        [EventDescription("Spawns a horde of enemies")]
         public void EnemyHorde()
         {
             StartCoroutine(SpawnHorde());
         }
+        [EventDescription("Causes your screen to shake")]
         public void EarthQuake()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<UltraEvents.MonoBehaviours.Effects.CameraShake>();
             AnnounceEvent("EARTHQUAKE!!!");
         }
+        [EventDescription("Inverts your controls")]
         public void InvertControls()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InvertControls>();
             AnnounceEvent("Get inverted");
         }
+        [EventDescription("Makes 2 enemies swap positions")]
         public void Swap2Enemies()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -520,11 +547,13 @@ namespace UltraEvents
             }
             
         }
+        [EventDescription("Makes projectiles bounce")]
         public void BouncyBullets()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<BouncyProj>();
             AnnounceEvent("Bullets bounce now!");
         }
+        [EventDescription("Makes every enemy tiny")]
         public void TinyEnemies()
         {
             //Kinda just like you tbh
@@ -549,6 +578,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000030 RID: 48 RVA: 0x000s04134 File Offset: 0x00002334
+        [EventDescription("Gives a task you need to complete in a given time")]
         public void GiveTask()
         {
             int num = Random.Range(0, 2);
@@ -570,6 +600,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000031 RID: 49 RVA: 0x00004198 File Offset: 0x00002398
+        [EventDescription("Adds gravity to random objects")]
         public void AddGravityToRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
@@ -589,6 +620,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000032 RID: 50 RVA: 0x00004256 File Offset: 0x00002456
+        [EventDescription("reduces your pixels")]
         public void GoGoGadgetPixelReducer()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<PixelReducer>();
@@ -596,6 +628,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000033 RID: 51 RVA: 0x00004274 File Offset: 0x00002474
+        [EventDescription("Removes random Objects")]
         public void RemoveRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
@@ -617,6 +650,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000034 RID: 52 RVA: 0x0000434C File Offset: 0x0000254C
+        [EventDescription("Opens a random link (you can change the links by going into the dll file location, then 'JSONFiles' then open 'Links.json')")]
         public void OpenRandomLink()
         {
             string directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -664,6 +698,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000036 RID: 54 RVA: 0x00004456 File Offset: 0x00002656
+        [EventDescription("Removes your railcannon charge")]
         public void RemoveCharge()
         {
             this.AnnounceEvent("no charge?");
@@ -671,6 +706,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000037 RID: 55 RVA: 0x00004474 File Offset: 0x00002674
+        [EventDescription("Removes your stamina")]
         public void RemoveStamina()
         {
             this.AnnounceEvent("no stamina?");
@@ -678,6 +714,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000038 RID: 56 RVA: 0x00004490 File Offset: 0x00002690
+        [EventDescription("Duplicates every enemy")]
         public void DupeAllEnemies()
         {
             this.AnnounceEvent("ever heard of mitosis?");
@@ -691,6 +728,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000039 RID: 57 RVA: 0x00004550 File Offset: 0x00002750
+        [EventDescription("Spawns a virtue insignia on you")]
         public void AirStrike()
         {
             this.AnnounceEvent("By the magic of the angels. I cast thee away");
@@ -702,6 +740,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003A RID: 58 RVA: 0x000045A4 File Offset: 0x000027A4
+        [EventDescription("Spawns a virtue insignia on every enemy")]
         public void Alakablam()
         {
             this.AnnounceEvent("Alakablam");
@@ -718,9 +757,10 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003B RID: 59 RVA: 0x0000466C File Offset: 0x0000286C
+        [EventDescription("Spawns a cat image")]
         public void LoadCat()
         {
-            this.AnnounceEvent("Spawn cat");
+            this.AnnounceEvent("Here a cat image");
             GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             gameObject.transform.position = ModUtils.GetPlayerTransform().transform.position;
             gameObject.AddComponent<Rigidbody>();
@@ -797,8 +837,9 @@ namespace UltraEvents
             }
             yield break;
         }
-
+        #region ad
         // Token: 0x0600003E RID: 62 RVA: 0x00004708 File Offset: 0x00002908
+        [EventDescription("Causes a video to spawn (you can have your own videos by going to the dll file location)")]
         public void SpawnAd()
         {
             string directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -884,14 +925,16 @@ namespace UltraEvents
         {
             Object.Destroy(videoDisplayObject);
         }
-
+        #endregion
         // Token: 0x06000042 RID: 66 RVA: 0x00004A33 File Offset: 0x00002C33
+        [EventDescription("Causes a parry flash")]
         public void FakeParry()
         {
             MonoSingleton<TimeController>.Instance.ParryFlash();
         }
 
         // Token: 0x06000043 RID: 67 RVA: 0x00004A41 File Offset: 0x00002C41
+        [EventDescription("Just straight up kills you.")]
         public void KillPlayer()
         {
             this.AnnounceEvent("DIE");
@@ -899,6 +942,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000044 RID: 68 RVA: 0x00004A70 File Offset: 0x00002C70
+        [EventDescription("Removes some style points")]
         public void RemoveStyle()
         {
             this.AnnounceEvent("im gonna take some style points real quick");
@@ -907,6 +951,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000045 RID: 69 RVA: 0x00004AB0 File Offset: 0x00002CB0
+        [EventDescription("Forces you to equip the other arm")]
         public void SwitchArm()
         {
             FistControl fistControl = Object.FindObjectOfType<FistControl>();
@@ -914,6 +959,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000046 RID: 70 RVA: 0x00004ACC File Offset: 0x00002CCC
+        [EventDescription("Smoothly swaps 2 objects positions")]
         public void SwapPos()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
@@ -943,6 +989,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000048 RID: 72 RVA: 0x00004B78 File Offset: 0x00002D78
+        [EventDescription("Makes you teleport to a random enemy")]
         public void TeleportToEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -953,6 +1000,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000049 RID: 73 RVA: 0x00004C01 File Offset: 0x00002E01
+        [EventDescription("Causes 2 events to happen")]
         public void MoreTrouble()
         {
             base.StopCoroutine("overTimeEvents");
@@ -976,6 +1024,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004B RID: 75 RVA: 0x00004C40 File Offset: 0x00002E40
+        [EventDescription("Turns a random enemy into a puppet (one of those blood enemies in 7-3")]
         public void TurnEnemyIntoPuppet()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -988,6 +1037,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004C RID: 76 RVA: 0x00004CC4 File Offset: 0x00002EC4
+        [EventDescription("Gives you a fishing rod")]
         public void GetFishingRod()
         {
             try
@@ -1008,6 +1058,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004D RID: 77 RVA: 0x00004D50 File Offset: 0x00002F50
+        [EventDescription("Sands every enemy")]
         public void noHeals()
         {
             this.AnnounceEvent("no heals?");
@@ -1020,6 +1071,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004E RID: 78 RVA: 0x00004DE4 File Offset: 0x00002FE4
+        [EventDescription("Places you underwater")]
         public void water()
         {
             this.AnnounceEvent("hello how are you? i am under the water");
@@ -1027,6 +1079,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004F RID: 79 RVA: 0x00004DFF File Offset: 0x00002FFF
+        [EventDescription("Blesses every enemy")]
         public void BlessthemAll()
         {
             this.AnnounceEvent("enemies now are protected by god");
@@ -1034,6 +1087,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000050 RID: 80 RVA: 0x00004E1A File Offset: 0x0000301A
+        [EventDescription("Makes you teleport back to your previous position")]
         public void Lag()
         {
             this.AnnounceEvent("your ping is so high");
@@ -1041,6 +1095,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000051 RID: 81 RVA: 0x00004E38 File Offset: 0x00003038
+        [EventDescription("Spawns a random enemy")]
         public void SpawnRandomEnemy()
         {
             List<SpawnableObject> list = Resources.FindObjectsOfTypeAll<SpawnableObject>().ToList<SpawnableObject>();
@@ -1051,6 +1106,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000052 RID: 82 RVA: 0x00004EC4 File Offset: 0x000030C4
+        [EventDescription("Gives you a duel wield")]
         public void GiveDualWield()
         {
             this.AnnounceEvent("its dual wielding time!!! *dual wields all over the place*");
@@ -1110,6 +1166,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000053 RID: 83 RVA: 0x000050AD File Offset: 0x000032AD
+        [EventDescription("Decreases the speed")]
         public void SlowMotion()
         {
             this.AnnounceEvent("wow this is slow");
@@ -1117,6 +1174,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000054 RID: 84 RVA: 0x000050C8 File Offset: 0x000032C8
+        [EventDescription("Increases the speed")]
         public void FastMotion()
         {
             this.AnnounceEvent("wow this is Fast");
@@ -1124,6 +1182,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000055 RID: 85 RVA: 0x000050E3 File Offset: 0x000032E3
+        [EventDescription("Makes it rain plushies!!!!")]
         public void PlushRain()
         {
             this.AnnounceEvent("Plush rain!!!!");
@@ -1131,6 +1190,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000056 RID: 86 RVA: 0x00005100 File Offset: 0x00003300
+        [EventDescription("Adds gravity to random objects")]
         public void AddGravityToRandomObject()
         {
             List<GameObject> list = Object.FindObjectsOfType<GameObject>().ToList<GameObject>();
@@ -1140,6 +1200,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000057 RID: 87 RVA: 0x0000514C File Offset: 0x0000334C
+        [EventDescription("Removes a random object (anything is an object btw)")]
         public void RemoveRandomObject()
         {
             List<GameObject> list = Object.FindObjectsOfType<GameObject>().ToList<GameObject>();
@@ -1149,6 +1210,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000058 RID: 88 RVA: 0x0000518C File Offset: 0x0000338C
+        [EventDescription("Fires your gun that you are currently holding")]
         public void FireGun()
         {
             this.AnnounceEvent("gonna fire your gun");
@@ -1253,6 +1315,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000059 RID: 89 RVA: 0x000053DC File Offset: 0x000035DC
+        [EventDescription("Reverses gravity. Wont go back unless triggered again")]
         public void ReverseGravity()
         {
             Physics.gravity *= -1f;
@@ -1268,6 +1331,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005A RID: 90 RVA: 0x00005434 File Offset: 0x00003634
+        [EventDescription("Kills a random enemy")]
         public void KillRandomEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -1278,6 +1342,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005B RID: 91 RVA: 0x000054AC File Offset: 0x000036AC
+        [EventDescription("It kills every enemy")]
         public void KillAllEnemies()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -1290,6 +1355,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005C RID: 92 RVA: 0x0000553C File Offset: 0x0000373C
+        [EventDescription("Forces you to hold a random weapon")]
         public void ChooseRandomWeapon()
         {
             this.AnnounceEvent("Here let me choose for you");
@@ -1299,6 +1365,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005D RID: 93 RVA: 0x00005588 File Offset: 0x00003788
+        [EventDescription("Buffs a random enemy")]
         public void BuffEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -1309,6 +1376,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005E RID: 94 RVA: 0x00005600 File Offset: 0x00003800
+        [EventDescription("duplicates a random enemy")]
         public void DupeEnemy()
         {
             List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
@@ -1320,6 +1388,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005F RID: 95 RVA: 0x000056A8 File Offset: 0x000038A8
+        [EventDescription("Explodes every enemy")]
         public void Kaboom()
         {
             this.AnnounceEvent("KABOOOOOOM");
@@ -1334,6 +1403,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000060 RID: 96 RVA: 0x00005740 File Offset: 0x00003940
+        [EventDescription("Forces you to switch to the previous weapon", "Go back to the other weapon")]
         public void usePreviousWeapon()
         {
             this.AnnounceEvent("go back to the other weapon");
@@ -1341,8 +1411,9 @@ namespace UltraEvents
             gunControl.SwitchWeapon(gunControl.lastUsedSlot, gunControl.slots[gunControl.lastUsedSlot - 1], true, false, false, false);
         }
 
-        
+
         // Token: 0x06000061 RID: 97 RVA: 0x00005784 File Offset: 0x00003984
+        [EventDescription("Removes the current weapon you are holding")]
         public void RemoveWeapon()
         {
             this.AnnounceEvent("you dont need this right?");
@@ -1362,6 +1433,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000062 RID: 98 RVA: 0x000057CC File Offset: 0x000039CC
+        [EventDescription("Teleports every enemy behind you")]
         public void TPEnemiesToPlayer()
         {
             this.AnnounceEvent("teleports behind you");
@@ -1373,6 +1445,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000063 RID: 99 RVA: 0x0000581E File Offset: 0x00003A1E
+        [EventDescription("Throws you in the air")]
         public void YEET()
         {
             this.AnnounceEvent("welcome to space :O");
