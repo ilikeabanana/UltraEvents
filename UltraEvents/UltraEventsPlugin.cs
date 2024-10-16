@@ -57,6 +57,7 @@ namespace UltraEvents
 
         // Token: 0x0400000F RID: 15
         public GameObject fishingCanvas;
+        public GameObject Zombie;
 
         // Token: 0x04000010 RID: 16
         public Shader unlitShader;
@@ -214,7 +215,7 @@ namespace UltraEvents
             this.rmeoveEffects = base.Config.Bind<bool>("Values", "remove effects", true, "when this is disabled it wont remove any effects. (NOT RECOMMENDED DONT DO THIS VERY LAGGY!!!)");
             this.announceEvents = base.Config.Bind<bool>("Values", "announce events", true, "when this is disabled it wont announce what event itll activate no more");
             this.everyFewSeconds = base.Config.Bind<bool>("Triggers", "every few seconds", true, "every few seconds an event will trigger");
-            this.DebugThing = base.Config.Bind<bool>("Values", "Debug", true, "This is for the developer to see if events trigger correctly");
+            this.DebugThing = base.Config.Bind<bool>("Values", "Debug", false, "This is for the developer to see if events trigger correctly");
             UltraEventsPlugin.OnSecretReceived = base.Config.Bind<bool>("Triggers", "On Secret Found", false, "will trigger an event when you find a secret");
             UltraEventsPlugin.OnParry = base.Config.Bind<bool>("Triggers", "On Parry", false, "will trigger an event when you parry");
             UltraEventsPlugin.OnEnemyDeath = base.Config.Bind<bool>("Triggers", "On Enemy Death", false, "will trigger an event when you kill an enemy");
@@ -281,6 +282,11 @@ namespace UltraEvents
             if (flag5)
             {
                 base.StartCoroutine(this.LoadLit());
+            }
+            bool flag6 = UltraEventsPlugin.Instance.Zombie == null;
+            if (flag6)
+            {
+                base.StartCoroutine(this.LoadFilth());
             }
 
             // Set the initial intensity to 0 (normal view)
@@ -369,6 +375,14 @@ namespace UltraEvents
             AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
             yield return new WaitUntil(() => RodHandle.IsDone);
             this.fishingCanvas = RodHandle.Result;
+            yield break;
+        }
+        private IEnumerator LoadFilth()
+        {
+            string prefabKey = "Assets/Prefabs/Enemies/Zombie.prefab";
+            AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
+            yield return new WaitUntil(() => RodHandle.IsDone);
+            this.Zombie = RodHandle.Result;
             yield break;
         }
 
@@ -550,6 +564,7 @@ namespace UltraEvents
                 var configEntry = Config.Bind("Events", eventName, true, $"Enable or disable the {eventName}");
                 events[eventName] = (method, configEntry);
             }
+            Debug.Log(events.Count);
         }
 
         public void UseRandomEvent()

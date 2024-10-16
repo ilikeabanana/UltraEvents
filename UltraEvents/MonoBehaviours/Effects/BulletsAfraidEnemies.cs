@@ -6,22 +6,35 @@ namespace UltraEvents.MonoBehaviours.Effects
     // Token: 0x02000019 RID: 25
     public class BulletsAfraidEnemies : Effect
     {
-        // Token: 0x060000AD RID: 173 RVA: 0x00006EA8 File Offset: 0x000050A8
+        private HashSet<EnemyIdentifier> enemiesProcessed = new HashSet<EnemyIdentifier>();
+        private List<BounceOffProjectiles> addedComponents = new List<BounceOffProjectiles>();
+
         private void Update()
         {
-            EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
-            foreach (EnemyIdentifier enemyIdentifier in array)
+            var enemies = Object.FindObjectsOfType<EnemyIdentifier>();
+            foreach (var enemy in enemies)
             {
-                bool flag = this.enemiesIveDone.Contains(enemyIdentifier);
-                if (!flag)
+                if (!enemiesProcessed.Contains(enemy) && !enemy.dead)
                 {
-                    enemyIdentifier.gameObject.AddComponent<BounceOffProjectiles>();
-                    this.enemiesIveDone.Add(enemyIdentifier);
+                    var bounceComponent = enemy.gameObject.AddComponent<BounceOffProjectiles>();
+                    addedComponents.Add(bounceComponent);
+                    enemiesProcessed.Add(enemy);
                 }
             }
         }
 
-        // Token: 0x04000078 RID: 120
-        private List<EnemyIdentifier> enemiesIveDone = new List<EnemyIdentifier>();
+        public override void RemoveEffect()
+        {
+            foreach (var component in addedComponents)
+            {
+                if (component != null)
+                {
+                    Destroy(component);
+                }
+            }
+            addedComponents.Clear();
+            enemiesProcessed.Clear();
+            base.RemoveEffect();
+        }
     }
 }

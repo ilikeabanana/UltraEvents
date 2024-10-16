@@ -17,6 +17,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
+using UnityEngine.InputSystem;
 
 namespace UltraEvents
 {
@@ -62,19 +63,142 @@ namespace UltraEvents
         }
         public void UpsideDown()
         {
-            if(UltraEventsPlugin.Instance.upsideDownMaterial.GetFloat("_Intensity") == 0)
-            {
-                UltraEventsPlugin.Instance.UpsideDown();
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<UpsideDown>();
                 AnnounceEvent("Why is everything upside down?");
-            }
-            else
-            {
-                UltraEventsPlugin.Instance.ResetScreen();
-                AnnounceEvent("Yay everything normal!");
-            }
             
         }
+        public void ShuffleWeapons()
+        {
+            GunControl gunControl = MonoSingleton<GunControl>.instance;
+            if (gunControl == null) return;
 
+            // Combine all weapons into a single list
+            List<GameObject> allWeapons = new List<GameObject>();
+            allWeapons.AddRange(gunControl.slot1);
+            allWeapons.AddRange(gunControl.slot2);
+            allWeapons.AddRange(gunControl.slot3);
+            allWeapons.AddRange(gunControl.slot4);
+            allWeapons.AddRange(gunControl.slot5);
+            allWeapons.AddRange(gunControl.slot6);
+
+            // Shuffle the combined list
+            System.Random rng = new System.Random();
+            allWeapons = allWeapons.OrderBy(x => rng.Next()).ToList();
+
+            // Clear existing slots
+            gunControl.slot1.Clear();
+            gunControl.slot2.Clear();
+            gunControl.slot3.Clear();
+            gunControl.slot4.Clear();
+            gunControl.slot5.Clear();
+            gunControl.slot6.Clear();
+
+            // Redistribute weapons to slots
+            for (int i = 0; i < allWeapons.Count; i++)
+            {
+                switch (i % 6)
+                {
+                    case 0: gunControl.slot1.Add(allWeapons[i]); break;
+                    case 1: gunControl.slot2.Add(allWeapons[i]); break;
+                    case 2: gunControl.slot3.Add(allWeapons[i]); break;
+                    case 3: gunControl.slot4.Add(allWeapons[i]); break;
+                    case 4: gunControl.slot5.Add(allWeapons[i]); break;
+                    case 5: gunControl.slot6.Add(allWeapons[i]); break;
+                }
+            }
+
+            // Update the main slots list
+            gunControl.slots.Clear();
+            gunControl.slots.Add(gunControl.slot1);
+            gunControl.slots.Add(gunControl.slot2);
+            gunControl.slots.Add(gunControl.slot3);
+            gunControl.slots.Add(gunControl.slot4);
+            gunControl.slots.Add(gunControl.slot5);
+            gunControl.slots.Add(gunControl.slot6);
+
+            AnnounceEvent("Rearranged your weapons a bit");
+        }
+        public void OneHit()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<EverythingIsOneHit>();
+            AnnounceEvent("Everything is one hit now");
+        }
+        public void Flash()
+        {
+            // Try to get the OptionsMenuToManager component and associated Canvas
+            OptionsMenuToManager optionsMenu = FindObjectOfType<OptionsMenuToManager>();
+            if (optionsMenu == null)
+            {
+                Debug.LogError("OptionsMenuToManager component not found!");
+                return;
+            }
+
+            Canvas canvas = optionsMenu.gameObject.GetComponent<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogError("Canvas component not found on OptionsMenuToManager gameObject!");
+                return;
+            }
+            // Create a new GameObject to display the flash effect
+            GameObject videoDisplayObject = new GameObject("Flash");
+            if (videoDisplayObject == null)
+            {
+                Debug.LogError("Failed to create GameObject 'Flash'!");
+                return;
+            }
+
+            // Set the parent to the canvas
+            videoDisplayObject.transform.SetParent(canvas.transform, false);
+
+            // Add an Image component to the GameObject
+            Image rawImage = videoDisplayObject.AddComponent<Image>();
+            if (rawImage == null)
+            {
+                Debug.LogError("Failed to add Image component to GameObject 'Flash'!");
+                return;
+            }
+
+            // Set the size and color of the image
+            RectTransform component = rawImage.GetComponent<RectTransform>();
+            if (component == null)
+            {
+                Debug.LogError("RectTransform component not found on the Image component!");
+                return;
+            }
+            component.sizeDelta = new Vector2(canvas.pixelRect.width, canvas.pixelRect.height);
+            rawImage.raycastTarget = false;
+            rawImage.color = new Color(1, 1, 1, 0); // Transparent initially
+
+            // Add and configure the FlashImage component
+            FlashImage flash = videoDisplayObject.AddComponent<FlashImage>();
+            if (flash == null)
+            {
+                Debug.LogError("Failed to add FlashImage component to GameObject 'Flash'!");
+                return;
+            }
+
+            // Configure FlashImage properties
+            flash.flashAlpha = 1;
+            flash.speed = 1;
+            flash.dontFlashOnEnable = true;
+            flash.oneTime = false;
+            
+            // Try to invoke Flash on the new FlashImage
+            try
+            {
+                flash.Flash(1);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error while trying to invoke Flash on the new FlashImage: {ex.Message}");
+            }
+        }
+
+        public void TimeStop()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<TimeStop>();
+            AnnounceEvent("ZA WARUDO");
+        }
 
         // Token: 0x0600001F RID: 31 RVA: 0x00003838 File Offset: 0x00001A38
         private void AnnounceEvent(string message)
@@ -350,8 +474,81 @@ namespace UltraEvents
                 UltraEventsPlugin.Instance.UseRandomEvent();
             }
         }
+        public void GiantHeads()
+        {
+            EnemyIdentifier[] identifiers = FindObjectsOfType<EnemyIdentifier>();
+            foreach(EnemyIdentifier identifier in identifiers)
+            {
+                if (identifier.dead) continue;
+                if (identifier.weakPoint != null)
+                {
+                    identifier.weakPoint.transform.localScale *= 3;
+                }
+            }
+            AnnounceEvent("Everyone's got a big head now!");
+        }
+        public void EnemyHorde()
+        {
+            StartCoroutine(SpawnHorde());
+        }
+        public void EarthQuake()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<UltraEvents.MonoBehaviours.Effects.CameraShake>();
+            AnnounceEvent("EARTHQUAKE!!!");
+        }
+        public void InvertControls()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<InvertControls>();
+            AnnounceEvent("Get inverted");
+        }
+        public void Swap2Enemies()
+        {
+            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
+            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            if(list.Count > 2)
+            {
+                EnemyIdentifier enemy1 = list[Random.Range(0, list.Count)];
+                EnemyIdentifier enemy2 = list[Random.Range(0, list.Count)];
+                while (enemy1 == enemy2)
+                {
+                    enemy1 = list[Random.Range(0, list.Count)];
+                }
+            }
+            else
+            {
+                UltraEventsPlugin.Instance.UseRandomEvent();
+            }
+            
+        }
+        public void BouncyBullets()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<BouncyProj>();
+            AnnounceEvent("Bullets bounce now!");
+        }
+        public void TinyEnemies()
+        {
+            //Kinda just like you tbh
+            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
+            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            foreach (EnemyIdentifier enemyIdentifier in list)
+            {
+                enemyIdentifier.transform.localScale /= 2;
+            }
+            AnnounceEvent("Tiny enemies");
+        }
 
-        // Token: 0x06000030 RID: 48 RVA: 0x00004134 File Offset: 0x00002334
+        private IEnumerator SpawnHorde()
+        {
+            AnnounceEvent("Here they come!");
+
+            for (int i = 0; i < Random.Range(50, 500); i++)
+            {
+                Instantiate(UltraEventsPlugin.Instance.Zombie, ModUtils.GetPlayerTransform().transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(0.1f); // Adjust the delay as needed
+            }
+        }
+
+        // Token: 0x06000030 RID: 48 RVA: 0x000s04134 File Offset: 0x00002334
         public void GiveTask()
         {
             int num = Random.Range(0, 2);
@@ -1144,6 +1341,7 @@ namespace UltraEvents
             gunControl.SwitchWeapon(gunControl.lastUsedSlot, gunControl.slots[gunControl.lastUsedSlot - 1], true, false, false, false);
         }
 
+        
         // Token: 0x06000061 RID: 97 RVA: 0x00005784 File Offset: 0x00003984
         public void RemoveWeapon()
         {
@@ -1151,6 +1349,14 @@ namespace UltraEvents
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
             GameObject currentWeapon = gunControl.currentWeapon;
             gunControl.allWeapons.Remove(currentWeapon);
+            foreach(List<GameObject> weapons in gunControl.slots)
+            {
+                if (weapons.Contains(currentWeapon))
+                {
+                    weapons.Remove(currentWeapon);
+                    break;
+                }
+            }
             gunControl.slotDict.Remove(currentWeapon);
             Object.Destroy(currentWeapon);
         }
