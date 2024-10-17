@@ -9,7 +9,6 @@ namespace UltraEvents.MonoBehaviours
         // Token: 0x06000081 RID: 129 RVA: 0x0000612C File Offset: 0x0000432C
         private void OnBecameInvisible()
         {
-            Debug.Log("hey im not here");
             bool flag = false;
             bool flag2 = this.unseens != null || this.unseens.Count == 0;
             if (flag2)
@@ -45,7 +44,6 @@ namespace UltraEvents.MonoBehaviours
         // Token: 0x06000082 RID: 130 RVA: 0x00006220 File Offset: 0x00004420
         private void OnBecameVisible()
         {
-            Debug.Log("hey im here");
             this.TheisSeen = true;
         }
 

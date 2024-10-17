@@ -18,9 +18,12 @@ using UnityEngine.Video;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using UnityEngine.InputSystem;
+using HarmonyLib;
+using TMPro;
 
 namespace UltraEvents
 {
+    [HarmonyPatch]
     public class Events : MonoBehaviour
     {
         // Token: 0x0600001D RID: 29 RVA: 0x000037CF File Offset: 0x000019CF
@@ -247,6 +250,60 @@ namespace UltraEvents
 
             this.AnnounceEvent("I moved everything a lil");
         }
+        [EventDescription("Spawns landmines in a certain radius")]
+        public void SpawnLandMines()
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Vector3 pos = ModUtils.GetRandomNavMeshPoint(MonoSingleton<NewMovement>.instance.transform.position, 70);
+                Instantiate(UltraEventsPlugin.Ladnmine, pos, Quaternion.identity);
+            }
+            
+
+        }
+        [EventDescription("Zaps a random enemy")]
+        public void ChainLightning()
+        {
+            EnemyIdentifier enemy = ModUtils.getRandomEnemyThatIsAlive();
+            if(enemy.nails.Count == 0)
+            {
+                Nail nail = Instantiate(UltraEventsPlugin.nail).GetComponent<Nail>();
+                nail.HitEnemy(enemy.gameObject.GetComponentInChildren<EnemyIdentifierIdentifier>().transform);
+            }
+            if (enemy)
+            {
+                enemy.hitter = "zapper";
+                enemy.hitterAttributes.Add(HitterAttribute.Electricity);
+                enemy.DeliverDamage(enemy.gameObject, Vector3.up * 100000f, enemy.transform.position, 1, true, 0f, null, false, false);
+                MonoSingleton<WeaponCharges>.Instance.naiZapperRecharge = 0f;
+                foreach (EnemyIdentifierIdentifier enemyIdentifierIdentifier in enemy.GetComponentsInChildren<EnemyIdentifierIdentifier>())
+                {
+                    if (enemyIdentifierIdentifier.gameObject != enemy.gameObject)
+                    {
+                        enemy.DeliverDamage(enemyIdentifierIdentifier.gameObject, Vector3.zero, enemyIdentifierIdentifier.transform.position, Mathf.Epsilon, false, 0f, null, false, false);
+                    }
+                    Object.Instantiate<GameObject>(UltraEventsPlugin.sparknail, enemyIdentifierIdentifier.transform.position, Quaternion.identity).transform.localScale *= 0.5f;
+                }
+            }
+            Instantiate(UltraEventsPlugin.Lightning, enemy.transform.position, Quaternion.identity);
+            AnnounceEvent("Zeus does not like " + enemy.FullName);
+        }
+
+        [EventDescription("Makes every projectiles of yours set enemies on fire", "Fire Bullets")]
+        public void FireBulets()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<FireBullets>();
+            AnnounceEvent("Your bullets are on fire");
+
+        }
+        [EventDescription("Spawns landmines on you every few seconds")]
+        public void SpawnLandMinesOnYou()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<SpawnLandminesEveryFewSeconds>();
+            AnnounceEvent("Spawning landmines on you");
+
+        }
+        [EventDescription("Swaps the player's position with a random enemy")]
         public void SwapPlayerWithEnemy()
         {
             EnemyIdentifier enemy = ModUtils.getRandomEnemyThatIsAlive();
@@ -257,9 +314,9 @@ namespace UltraEvents
         [EventDescription("Scales everything slightly")]
         public void ScaleEverything()
         {
-            float num = 0.1f;
-            float num2 = 0.1f;
-            float num3 = 0.1f;
+            float num = 0.01f;
+            float num2 = 0.01f;
+            float num3 = 0.01f;
             Debug.Log(num.ToString() + " " + num2.ToString() + " " + num3.ToString());
 
             // Find objects only in the active scene instead of all resources
@@ -275,7 +332,7 @@ namespace UltraEvents
                 if (gameObject.scene == SceneManager.GetActiveScene())
                 {
                     // Skip moving the player
-                    if (!IsChild(MonoSingleton<NewMovement>.Instance.gameObject, gameObject))
+                    if (!IsChild(MonoSingleton<NewMovement>.Instance.gameObject, gameObject) && !gameObject.transform.parent.name.ToLower().Contains("virtual"))
                     {
                         gameObject.transform.localScale += movement;
                     }
@@ -459,7 +516,126 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<ExplodingBulletsEffect>();
             this.AnnounceEvent("Bullets now explode");
         }
+        [EventDescription("You can infinitely dash")]
+        public void InfiniteDashing()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<InfiniteDash>();
+            this.AnnounceEvent("You can now infinitely dash");
+        }
+        [EventDescription("Does every event that is enabled", null, false)]
+        public void DoEveryEvent()
+        {
+            StartCoroutine(LaunchAllEvents());
+        }
+        IEnumerator LaunchAllEvents()
+        {
+            var enabledEvents = UltraEventsPlugin.events
+                .Where(e => e.Value.Method.Name != "DoEveryEvent")
+                .ToList();
 
+            Debug.Log($"Starting to launch {enabledEvents.Count} events.");
+
+            foreach (var info in enabledEvents)
+            {
+                try
+                {
+                    Debug.Log($"Invoking event: {info.Value.Method.Name}");
+                    info.Value.Method.Invoke(this, null);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Error invoking event {info.Value.Method.Name}: {e}");
+                }
+
+                yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / enabledEvents.Count);
+            }
+
+            Debug.Log("Finished launching all events.");
+        }
+
+
+        [EventDescription("Heals enemies to max health")]
+        public void HealAllEnemies()
+        {
+            List<EnemyIdentifier> enemies = ModUtils.GetEveryEnemyThatAreAlive();
+            foreach (var instance in enemies)
+            {
+                float heealth = instance.gameObject.GetComponent<HealthRememberer>().health;
+
+                if (instance.enemyType == EnemyType.Drone || instance.enemyType == EnemyType.Virtue)
+                {
+                    if (!instance.drone)
+                    {
+                        instance.drone = instance.GetComponent<Drone>();
+                    }
+                    if (instance.drone)
+                    {
+                        instance.drone.health = heealth;
+                        return;
+                    }
+                }
+                else if (instance.enemyType == EnemyType.MaliciousFace)
+                {
+                    if (!instance.spider)
+                    {
+                        instance.spider = instance.GetComponent<SpiderBody>();
+                    }
+                    if (instance.spider)
+                    {
+                        instance.spider.health = heealth;
+                        return;
+                    }
+                }
+                else
+                {
+                    switch (instance.enemyClass)
+                    {
+                        case EnemyClass.Husk:
+                            if (!instance.zombie)
+                            {
+                                instance.zombie = instance.GetComponent<Zombie>();
+                            }
+                            if (instance.zombie)
+                            {
+                                instance.zombie.health = heealth;
+                                return;
+                            }
+                            break;
+                        case EnemyClass.Machine:
+                            if (!instance.machine)
+                            {
+                                instance.machine = instance.GetComponent<Machine>();
+                            }
+                            if (instance.machine)
+                            {
+                                instance.machine.health = heealth;
+                            }
+                            break;
+                        case EnemyClass.Demon:
+                            if (!instance.statue)
+                            {
+                                instance.statue = instance.GetComponent<Statue>();
+                            }
+                            if (instance.statue)
+                            {
+                                instance.statue.health = heealth;
+                                return;
+                            }
+                            break;
+                        default:
+                            return;
+                    }
+                }
+                instance.ForceGetHealth();
+            }
+            AnnounceEvent("I healed all enemies lol");
+        }
+        [HarmonyPatch(typeof(EnemyIdentifier), nameof(EnemyIdentifier.Awake))]
+        [HarmonyPostfix]
+        public static void setHealthRememberer(EnemyIdentifier __instance)
+        {
+            __instance.gameObject.AddComponent<HealthRememberer>().health = __instance.health;
+        }
         // Token: 0x0600002D RID: 45 RVA: 0x00003E8B File Offset: 0x0000208B
         [EventDescription("Every enemy that you dont see disappears")]
         public void SchizophreniaUpdate()
@@ -473,6 +649,12 @@ namespace UltraEvents
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InvisEnemies>();
             this.AnnounceEvent("Enemies are now invisible");
+        }
+        [EventDescription("Turns every projectile invisible")]
+        public void InvisibleProjectiles()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<InvisProj>();
+            this.AnnounceEvent("Projectiles are now invisible");
         }
 
         // Token: 0x0600002F RID: 47 RVA: 0x00003EB8 File Offset: 0x000020B8
@@ -524,7 +706,7 @@ namespace UltraEvents
             }
             catch (Exception ex)
             {
-                UltraEventsPlugin.Instance.UseRandomEvent();
+                
             }
         }
         [EventDescription("Makes every enemy's weakpoint 3 times larger")]
@@ -570,11 +752,6 @@ namespace UltraEvents
                     enemy1 = list[Random.Range(0, list.Count)];
                 }
             }
-            else
-            {
-                UltraEventsPlugin.Instance.UseRandomEvent();
-            }
-            
         }
         [EventDescription("Makes projectiles bounce")]
         public void BouncyBullets()
@@ -1039,7 +1216,7 @@ namespace UltraEvents
             int num;
             for (int i = 0; i < amount; i = num + 1)
             {
-                UltraEventsPlugin.Instance.UseRandomEvent();
+                UltraEventsPlugin.Instance.UseRandomEvent(true);
                 yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / 10);
                 num = i;
             }

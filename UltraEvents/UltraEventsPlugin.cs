@@ -74,12 +74,15 @@ namespace UltraEvents
         // Token: 0x04000014 RID: 20
         public ConfigEntry<bool> rmeoveEffects;
         public ConfigEntry<bool> DebugThing;
+        public ConfigEntry<KeyCode> DoEvent;
+        public ConfigEntry<KeyCode> RemoveEffects;
 
         // Token: 0x04000015 RID: 21
         public ConfigEntry<bool> announceEvents;
 
         // Token: 0x04000016 RID: 22
         public ConfigEntry<bool> everyFewSeconds;
+        public ConfigEntry<bool> OnButtonPress;
 
         // Token: 0x04000017 RID: 23
         public static ConfigEntry<bool> OnSecretReceived;
@@ -102,9 +105,13 @@ namespace UltraEvents
 
         // Token: 0x0400001D RID: 29
         public static GameObject WickedObject;
+        public static GameObject nail;
+        public static GameObject sparknail;
+        public static GameObject Lightning;
 
         // Token: 0x0400001E RID: 30
         public static Shader VertexLit;
+        public static GameObject Ladnmine;
 
         // Token: 0x0400001F RID: 31
         private string[] plushieKeys = new string[]
@@ -216,6 +223,8 @@ namespace UltraEvents
             this.announceEvents = base.Config.Bind<bool>("Values", "announce events", true, "when this is disabled it wont announce what event itll activate no more");
             this.everyFewSeconds = base.Config.Bind<bool>("Triggers", "every few seconds", true, "every few seconds an event will trigger");
             this.DebugThing = base.Config.Bind<bool>("Values", "Debug", false, "This is for the developer to see if events trigger correctly");
+            this.DoEvent = base.Config.Bind<KeyCode>("Values", "Do Event button", KeyCode.T, "Only used when On Key Bind Press is on");
+            this.RemoveEffects = base.Config.Bind<KeyCode>("Values", "Remove Effects button", KeyCode.M, "Only used when On Key Bind Press is on");
             UltraEventsPlugin.OnSecretReceived = base.Config.Bind<bool>("Triggers", "On Secret Found", false, "will trigger an event when you find a secret");
             UltraEventsPlugin.OnParry = base.Config.Bind<bool>("Triggers", "On Parry", false, "will trigger an event when you parry");
             UltraEventsPlugin.OnEnemyDeath = base.Config.Bind<bool>("Triggers", "On Enemy Death", false, "will trigger an event when you kill an enemy");
@@ -223,7 +232,7 @@ namespace UltraEvents
             UltraEventsPlugin.GetStyle = base.Config.Bind<bool>("Triggers", "On Get Style", false, "will trigger an event when you receive Style");
             UltraEventsPlugin.WeaponSwap = base.Config.Bind<bool>("Triggers", "On Weapon Swap", false, "will trigger an event when you swap weapons");
             UltraEventsPlugin.PickUp = base.Config.Bind<bool>("Triggers", "On Item Pick Up", false, "will trigger an event when grab an item");
-           
+            OnButtonPress = Config.Bind<bool>("Triggers", "On Key Bind Press", false, "will trigger an event when you press a certain key (configurable in Values)");
             base.Logger.LogInfo("loadedAllConfigs");
             configBuilder = new ConfigBuilder();
             configBuilder.BuildAll();
@@ -288,7 +297,26 @@ namespace UltraEvents
             {
                 base.StartCoroutine(this.LoadFilth());
             }
-
+            bool flag7 = UltraEventsPlugin.Ladnmine == null;
+            if (flag7)
+            {
+                base.StartCoroutine(this.LoadLandmine());
+            }
+            bool flag8 = UltraEventsPlugin.nail == null;
+            if (flag8)
+            {
+                base.StartCoroutine(this.LoadNail());
+            }
+            bool flag9 = UltraEventsPlugin.sparknail == null;
+            if (flag9)
+            {
+                base.StartCoroutine(this.LoadNailSpark());
+            }
+            bool flag10 = UltraEventsPlugin.Lightning == null;
+            if (flag10)
+            {
+                base.StartCoroutine(this.LoadLightning());
+            }
             // Set the initial intensity to 0 (normal view)
             upsideDownMaterial.SetFloat("_Intensity", 0f);
             GameObject gameObject = null;
@@ -385,6 +413,30 @@ namespace UltraEvents
             this.Zombie = RodHandle.Result;
             yield break;
         }
+        private IEnumerator LoadNail()
+        {
+            string prefabKey = "Assets/Prefabs/Attacks and Projectiles/Nails/Nail.prefab";
+            AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
+            yield return new WaitUntil(() => RodHandle.IsDone);
+            nail = RodHandle.Result;
+            yield break;
+        }
+        private IEnumerator LoadNailSpark()
+        {
+            string prefabKey = "Assets/Particles/SparksNail.prefab";
+            AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
+            yield return new WaitUntil(() => RodHandle.IsDone);
+            sparknail = RodHandle.Result;
+            yield break;
+        }
+        private IEnumerator LoadLightning()
+        {
+            string prefabKey = "Assets/Prefabs/Attacks and Projectiles/Explosions/Explosion Lightning.prefab";
+            AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
+            yield return new WaitUntil(() => RodHandle.IsDone);
+            Lightning = RodHandle.Result;
+            yield break;
+        }
 
         // Token: 0x06000013 RID: 19 RVA: 0x00002C17 File Offset: 0x00000E17
         private IEnumerator LoadWicked()
@@ -406,18 +458,29 @@ namespace UltraEvents
             yield break;
         }
 
+        private IEnumerator LoadLandmine()
+        {
+            string prefabKey = "Assets/Prefabs/Attacks and Projectiles/Landmine.prefab";
+            AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
+            yield return new WaitUntil(() => RodHandle.IsDone);
+            UltraEventsPlugin.Ladnmine = RodHandle.Result;
+            yield break;
+        }
         // Token: 0x06000015 RID: 21 RVA: 0x00002C38 File Offset: 0x00000E38
         private void RemoveEffect()
         {
             bool flag = !this.rmeoveEffects.Value;
             if (!flag)
             {
-                Effect component = this.EffectManager.GetComponent<Effect>();
-                bool flag2 = component != null;
-                if (flag2)
+                Effect[] components = this.EffectManager.GetComponents<Effect>();
+                if (components.Length > 0)
                 {
-                    component.RemoveEffect();
-                    Object.Destroy(component);
+                    foreach(Effect component in components)
+                    {
+                        component.RemoveEffect();
+                        Object.Destroy(component);
+                    }
+                    
                 }
             }
         }
@@ -543,13 +606,21 @@ namespace UltraEvents
                     }
                 }
             }
+            if(Input.GetKeyDown(DoEvent.Value) && OnButtonPress.Value)
+            {
+                UseRandomEventAndRemoveEffects();
+            }
+            if (Input.GetKeyDown(RemoveEffects.Value) && OnButtonPress.Value)
+            {
+                RemoveEffect();
+            }
         }
 
         // Token: 0x0600001B RID: 27 RVA: 0x00002FFC File Offset: 0x000011FC
         public void UseRandomEventAndRemoveEffects()
         {
             this.RemoveEffect();
-            this.UseRandomEvent();
+            this.UseRandomEvent(false);
         }
 
         // Token: 0x0600001C RID: 28 RVA: 0x00003010 File Offset: 0x00001210
@@ -561,7 +632,7 @@ namespace UltraEvents
             foreach (var method in eventMethods)
             {
                 string eventName = method.Name;
-
+                bool defaultValue = true;
                 // Get the EventDescription attribute
                 var descriptionAttribute = method.GetCustomAttribute<EventDescriptionAttribute>();
                 string eventDescription = descriptionAttribute != null
@@ -570,10 +641,11 @@ namespace UltraEvents
                 if(descriptionAttribute != null)
                 {
                     eventName = descriptionAttribute.Name != null ? descriptionAttribute.Name : method.Name;
+                    defaultValue = descriptionAttribute.DefaultValue;
                 }
                 
                 // Bind config for enabling/disabling the event
-                var configEntry = Config.Bind("Events", eventName, true, eventDescription);
+                var configEntry = Config.Bind("Events", eventName, defaultValue, eventDescription);
 
                 // Store event method and config
                 events[eventName] = (method, configEntry);
@@ -582,9 +654,9 @@ namespace UltraEvents
         }
 
 
-        public void UseRandomEvent()
+        public void UseRandomEvent(bool FromTrouble)
         {
-            var enabledEvents = events.Where(e => e.Value.Config.Value).ToList();
+            var enabledEvents = events.Where(e => e.Value.Config.Value && !(e.Value.Method.Name == "DoEveryEvent" && FromTrouble)).ToList();
             if (enabledEvents.Count == 0)
             {
                 Console.WriteLine("No events are enabled.");
@@ -600,8 +672,6 @@ namespace UltraEvents
 
             randomEvent.Value.Method.Invoke(Theevents, null);
 
-            
-            
         }
 
         

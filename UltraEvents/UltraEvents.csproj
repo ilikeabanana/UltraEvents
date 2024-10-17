@@ -148,7 +148,10 @@
     <Compile Include="MonoBehaviours\Effects\EverythingIsOneHit.cs" />
     <Compile Include="MonoBehaviours\Effects\ExplodingBulletsEffect.cs" />
     <Compile Include="MonoBehaviours\Effects\Fastmotion.cs" />
+    <Compile Include="MonoBehaviours\Effects\FireBullets.cs" />
+    <Compile Include="MonoBehaviours\Effects\InfiniteDash.cs" />
     <Compile Include="MonoBehaviours\Effects\InvertControls.cs" />
+    <Compile Include="MonoBehaviours\Effects\InvisProj.cs" />
     <Compile Include="MonoBehaviours\Effects\InvisEnemies.cs" />
     <Compile Include="MonoBehaviours\Effects\Lagging.cs" />
     <Compile Include="MonoBehaviours\Effects\NailToCoin.cs" />
@@ -157,10 +160,12 @@
     <Compile Include="MonoBehaviours\Effects\PlushRain.cs" />
     <Compile Include="MonoBehaviours\Effects\Slowmotion.cs" />
     <Compile Include="MonoBehaviours\Effects\SomethingWickedThisWayComes.cs" />
+    <Compile Include="MonoBehaviours\Effects\SpawnLandminesEveryFewSeconds.cs" />
     <Compile Include="MonoBehaviours\Effects\sSchizophreniaUpdateEffect.cs" />
     <Compile Include="MonoBehaviours\Effects\TimeStop.cs" />
     <Compile Include="MonoBehaviours\Effects\UpsideDown.cs" />
     <Compile Include="MonoBehaviours\Effects\VirtualInsanityEffect.cs" />
+    <Compile Include="MonoBehaviours\HealthRememberer.cs" />
     <Compile Include="MonoBehaviours\MoveAndTurn.cs" />
     <Compile Include="MonoBehaviours\RemoveOnUnseen.cs" />
     <Compile Include="MonoBehaviours\ShaderApplier.cs" />

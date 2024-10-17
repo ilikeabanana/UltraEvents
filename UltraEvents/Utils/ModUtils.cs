@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace UltraEvents.Utils
 {
@@ -39,7 +40,20 @@ namespace UltraEvents.Utils
             if (enemies == null || enemies.Count == 0) return null; // Check if the list is null or empty
             return enemies[Random.Range(0, enemies.Count)];
         }
+        public static Vector3 GetRandomNavMeshPoint(Vector3 origin, float radius)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * radius; // Get random direction within the sphere
+            randomDirection += origin; // Offset by the origin position
 
+            NavMeshHit hit;
+            // Sample the NavMesh at the random position within the radius
+            if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
+            {
+                return hit.position; // Return the position on the NavMesh
+            }
+
+            return origin; // Return the origin if no valid point was found
+        }
         // Token: 0x06000067 RID: 103 RVA: 0x00005A08 File Offset: 0x00003C08
         public static void AttachWeapon(int tempSlot, string pPref, GameObject weapon, GunSetter gs)
         {
