@@ -31,7 +31,12 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<SomethingWickedThisWayComes>();
             
         }
-
+        [EventDescription("Makes your punch force 1 thousand", "FALCON PUNCH")]
+        public void FALCONPUNCHH()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<FALCONPUNCH>();
+            AnnounceEvent("FALCON PUNCH");
+        }
         // Token: 0x0600001E RID: 30 RVA: 0x000037EC File Offset: 0x000019EC
         private bool IsChild(GameObject objectToCheck, GameObject parentObject)
         {
