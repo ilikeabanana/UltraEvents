@@ -37,6 +37,20 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<FALCONPUNCH>();
             AnnounceEvent("FALCON PUNCH");
         }
+        [EventDescription("Yeets every object with gravity")]
+        public void YEETAll()
+        {
+            Rigidbody[] rbs = FindObjectsOfType<Rigidbody>();
+            foreach (Rigidbody rb in rbs)
+            {
+                rb.AddForce(new Vector3(0, 100, 0), ForceMode.Impulse);
+            }
+            List<EnemyIdentifier> enemies = ModUtils.GetEveryEnemy();
+            foreach(EnemyIdentifier enemy in enemies)
+            {
+                enemy.DeliverDamage(enemy.gameObject, new Vector3(0, 50000, 0), enemy.transform.position, 0, false, 0f, null, false, true);
+            }
+        }
         // Token: 0x0600001E RID: 30 RVA: 0x000037EC File Offset: 0x000019EC
         private bool IsChild(GameObject objectToCheck, GameObject parentObject)
         {
