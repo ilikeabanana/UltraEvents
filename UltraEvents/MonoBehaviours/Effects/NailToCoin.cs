@@ -1,14 +1,16 @@
-﻿using System.Collections;
+﻿using HarmonyLib;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace UltraEvents.MonoBehaviours.Effects
 {
-    // Token: 0x0200001D RID: 29
+    [HarmonyPatch(typeof(Nail), nameof(Nail.Start))]
     public class NailToCoin : Effect
     {
         // Token: 0x060000B7 RID: 183 RVA: 0x000070EB File Offset: 0x000052EB
+        static bool IsActive = false;
         private void Start()
         {
             base.StartCoroutine(this.GetCoin());
@@ -20,28 +22,27 @@ namespace UltraEvents.MonoBehaviours.Effects
             string prefabKey = "Assets/Prefabs/Attacks and Projectiles/Coin.prefab";
             AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
             yield return new WaitUntil(() => RodHandle.IsDone);
-            this.lecoin = RodHandle.Result;
+            lecoin = RodHandle.Result;
             yield break;
         }
 
-        // Token: 0x060000B9 RID: 185 RVA: 0x0000710C File Offset: 0x0000530C
-        private void Update()
+        
+        public override void RemoveEffect()
         {
-            bool flag = this.lecoin == null;
-            if (!flag)
-            {
-                Nail[] array = Object.FindObjectsOfType<Nail>();
-                foreach (Nail nail in array)
-                {
-                    GameObject gameObject = Object.Instantiate<GameObject>(this.lecoin, nail.transform.position, nail.transform.rotation);
-                    Rigidbody component = gameObject.GetComponent<Rigidbody>();
-                    component.velocity = nail.rb.velocity;
-                    Object.Destroy(nail.gameObject);
-                }
-            }
+            IsActive = false;
+            base.RemoveEffect();
         }
 
         // Token: 0x0400007C RID: 124
-        private GameObject lecoin;
+        private static GameObject lecoin;
+        public static bool Prefix(Nail __instance)
+        {
+            if(!IsActive) return true;
+            GameObject gameObject = Object.Instantiate<GameObject>(lecoin, __instance.transform.position, __instance.transform.rotation);
+            Rigidbody component = gameObject.GetComponent<Rigidbody>();
+            component.velocity = __instance.rb.velocity;
+            Object.Destroy(__instance.gameObject);
+            return false;
+        }
     }
 }

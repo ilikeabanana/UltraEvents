@@ -147,6 +147,7 @@
     <Compile Include="MonoBehaviours\Effects\CameraShake.cs" />
     <Compile Include="MonoBehaviours\Effects\EverythingIsOneHit.cs" />
     <Compile Include="MonoBehaviours\Effects\ExplodingBulletsEffect.cs" />
+    <Compile Include="MonoBehaviours\Effects\FALCONPUNCH.cs" />
     <Compile Include="MonoBehaviours\Effects\Fastmotion.cs" />
     <Compile Include="MonoBehaviours\Effects\FireBullets.cs" />
     <Compile Include="MonoBehaviours\Effects\InfiniteDash.cs" />

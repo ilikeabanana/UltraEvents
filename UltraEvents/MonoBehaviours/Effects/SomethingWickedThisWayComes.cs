@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ULTRAKILL.Cheats;
 using UnityEngine;
 
@@ -65,22 +66,23 @@ namespace UltraEvents.MonoBehaviours.Effects
 			bool flag2 = !flag;
 			if (flag2)
 			{
-				for (int i = 0; i < this.instances.Count; i++)
-				{
-					bool flag3 = this.instances[i] == null;
-					bool flag4 = !flag3;
-					if (flag4)
-					{
-						bool flag5 = this.instances[i] == null;
-						bool flag6 = !flag5;
-						if (flag6)
-						{
-							this.instances[i].enabled = false;
-							RenderSettings.ambientLight = Color.black;
-							RenderSettings.fog = false;
-						}
-					}
-				}
+                var lights = this.instances.Keys.ToList();
+                for (int i = 0; i < lights.Count; i++)
+                {
+                    bool flag3 = lights[i] == null;
+                    bool flag4 = !flag3;
+                    if (flag4)
+                    {
+                        bool flag5 = lights[i] == null;
+                        bool flag6 = !flag5;
+                        if (flag6)
+                        {
+                            lights[i].enabled = false;
+                            RenderSettings.ambientLight = Color.black;
+                            RenderSettings.fog = false;
+                        }
+                    }
+                }
 			}
 		}
 
@@ -106,7 +108,7 @@ namespace UltraEvents.MonoBehaviours.Effects
 					bool flag6 = !flag5;
 					if (flag6)
 					{
-						this.instances.Add(light);
+						this.instances.Add(light, light.enabled);
 					}
 				}
 			}
@@ -122,15 +124,15 @@ namespace UltraEvents.MonoBehaviours.Effects
 				Object.Destroy(this.flashLight);
 				this.flashLight = null;
 			}
-			for (int i = 0; i < this.instances.Count; i++)
-			{
-				bool flag2 = this.instances[i] != null;
-				if (flag2)
-				{
-					this.instances[i].enabled = true;
-				}
-			}
-			RenderSettings.ambientLight = this.originalAmbientLight;
+            var lights = this.instances.Keys.ToList();
+            for (int i = 0; i < lights.Count; i++)
+            {
+                if (lights[i] != null)
+                {
+                    lights[i].enabled = instances[lights[i]];
+                }
+            }
+            RenderSettings.ambientLight = this.originalAmbientLight;
 			RenderSettings.fog = this.originalFog;
 			RenderSettings.fogDensity = this.originalFogDensity;
 			RenderSettings.fogColor = this.originalFogColor;
@@ -160,7 +162,7 @@ namespace UltraEvents.MonoBehaviours.Effects
 		private Color originalFogColor;
 
 		// Token: 0x04000084 RID: 132
-		private List<Light> instances = new List<Light>();
+		private Dictionary<Light, bool> instances = new Dictionary<Light, bool>();
 
 		// Token: 0x04000085 RID: 133
 		private Light flashLight;

@@ -52,6 +52,16 @@ namespace UltraEvents.Utils
                 return hit.position; // Return the position on the NavMesh
             }
 
+        public static List<T> GetEverythingOfType<T>(System.Predicate<T> matchThing = null) where T : UnityEngine.Object
+        {
+            List<T> values = Resources.FindObjectsOfTypeAll<T>().ToList();
+            if (matchThing != null)
+            {
+                values.RemoveAll(matchThing);
+            }
+            return values;
+        }
+
             return origin; // Return the origin if no valid point was found
         }
         // Token: 0x06000067 RID: 103 RVA: 0x00005A08 File Offset: 0x00003C08
