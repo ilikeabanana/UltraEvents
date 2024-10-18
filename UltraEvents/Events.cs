@@ -541,36 +541,7 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InfiniteDash>();
             this.AnnounceEvent("You can now infinitely dash");
         }
-        [EventDescription("Does every event", null, false)]
-        public void DoEveryEvent()
-        {
-            StartCoroutine(LaunchAllEvents());
-        }
-        IEnumerator LaunchAllEvents()
-        {
-            var enabledEvents = UltraEventsPlugin.events
-                .Where(e => e.Value.Method.Name != "DoEveryEvent")
-                .ToList();
-
-            Debug.Log($"Starting to launch {enabledEvents.Count} events.");
-
-            foreach (var info in enabledEvents)
-            {
-                try
-                {
-                    Debug.Log($"Invoking event: {info.Value.Method.Name}");
-                    info.Value.Method.Invoke(this, null);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Error invoking event {info.Value.Method.Name}: {e}");
-                }
-
-                yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / enabledEvents.Count);
-            }
-
-            Debug.Log("Finished launching all events.");
-        }
+        
 
 
         [EventDescription("Heals enemies to max health")]
@@ -1661,6 +1632,36 @@ namespace UltraEvents
         {
             this.AnnounceEvent("welcome to space :O");
             ModUtils.GetPlayerTransform().LaunchFromPoint(ModUtils.GetPlayerTransform().transform.position, 50000000f, 1f);
+        }
+        [EventDescription("Does every event", null, false)]
+        public void DoEveryEvent()
+        {
+            StartCoroutine(LaunchAllEvents());
+        }
+        IEnumerator LaunchAllEvents()
+        {
+            var enabledEvents = UltraEventsPlugin.events
+                .Where(e => e.Value.Method.Name != "DoEveryEvent")
+                .ToList();
+
+            Debug.Log($"Starting to launch {enabledEvents.Count} events.");
+
+            foreach (var info in enabledEvents)
+            {
+                try
+                {
+                    Debug.Log($"Invoking event: {info.Value.Method.Name}");
+                    info.Value.Method.Invoke(this, null);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Error invoking event {info.Value.Method.Name}: {e}");
+                }
+
+                yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / enabledEvents.Count);
+            }
+
+            Debug.Log("Finished launching all events.");
         }
     }
 }
