@@ -541,7 +541,7 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InfiniteDash>();
             this.AnnounceEvent("You can now infinitely dash");
         }
-        [EventDescription("Does every event that is enabled", null, false)]
+        [EventDescription("Does every event", null, false)]
         public void DoEveryEvent()
         {
             StartCoroutine(LaunchAllEvents());

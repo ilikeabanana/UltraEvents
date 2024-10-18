@@ -52,6 +52,8 @@ namespace UltraEvents.Utils
                 return hit.position; // Return the position on the NavMesh
             }
 
+            return origin; // Return the origin if no valid point was found
+        }
         public static List<T> GetEverythingOfType<T>(System.Predicate<T> matchThing = null) where T : UnityEngine.Object
         {
             List<T> values = Resources.FindObjectsOfTypeAll<T>().ToList();
@@ -62,8 +64,6 @@ namespace UltraEvents.Utils
             return values;
         }
 
-            return origin; // Return the origin if no valid point was found
-        }
         // Token: 0x06000067 RID: 103 RVA: 0x00005A08 File Offset: 0x00003C08
         public static void AttachWeapon(int tempSlot, string pPref, GameObject weapon, GunSetter gs)
         {
