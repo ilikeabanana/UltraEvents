@@ -21,6 +21,7 @@ namespace UltraEvents.MonoBehaviours.Effects
             foreach(Punch punch in punches)
             {
                 punch.force = 1000;
+                punch.damage = 10;
             }
         }
         public override void RemoveEffect()
@@ -30,7 +31,7 @@ namespace UltraEvents.MonoBehaviours.Effects
                 FistType fistType = punch.type;
                 if (fistType == FistType.Standard)
                 {
-
+                    punch.damage = 1;
                     punch.force = 25f;
                     return;
                 }
@@ -39,6 +40,7 @@ namespace UltraEvents.MonoBehaviours.Effects
                     return;
                 }
                 punch.force = 100f;
+                punch.damage = 2.5f;
             }
             base.RemoveEffect();
         }
