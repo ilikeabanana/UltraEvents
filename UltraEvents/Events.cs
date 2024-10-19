@@ -92,6 +92,13 @@ namespace UltraEvents
                 AnnounceEvent("Why is everything upside down?");
             
         }
+        [EventDescription("Makes you go very fast")]
+        public void GOTTAGOFAST()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<GottaGoQuick>();
+            AnnounceEvent("GOTTA GO FAST");
+
+        }
         [EventDescription("Shuffles your weapons")]
         public void ShuffleWeapons()
         {
@@ -1499,6 +1506,39 @@ namespace UltraEvents
                         }
                     }
                 }
+            }
+        }
+        [EventDescription("It launches a meteor on you")]
+        public void Meteor()
+        {
+            StartCoroutine(MeteorShower());
+            AnnounceEvent("METEOR SHOWER INCOMING");
+        }
+        [EventDescription("Spawns 8 cerberus projectiles around you")]
+        public void CerbSurround()
+        {
+            GameObject balls = Instantiate(UltraEventsPlugin.CerbApples, ModUtils.GetPlayerTransform().transform.position, Quaternion.identity);
+            Projectile[] projs = balls.GetComponentsInChildren<Projectile>();
+            foreach(Projectile proj in projs)
+            {
+                proj.rb.AddForce(proj.gameObject.transform.forward * 10000f);
+            }
+        }
+
+        IEnumerator MeteorShower()
+        {
+            for (int i = 0; i < 15; i++)
+            {
+                // Get a random Y rotation for the meteor
+                Quaternion randomYRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+
+                // Instantiate the meteor with the random Y rotation
+                GameObject metoer = Instantiate(UltraEventsPlugin.Meteor,
+                            ModUtils.GetRandomNavMeshPoint(ModUtils.GetPlayerTransform().transform.position, 40),
+                            randomYRotation);
+                Projectile proj = metoer.GetComponentInChildren<Projectile>();
+                // Wait for a short duration before spawning the next one
+                yield return new WaitForSeconds(UltraEventsPlugin.Instance.AmountOfTime.Value / 15);
             }
         }
 

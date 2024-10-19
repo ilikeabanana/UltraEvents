@@ -112,6 +112,9 @@ namespace UltraEvents
         // Token: 0x0400001E RID: 30
         public static Shader VertexLit;
         public static GameObject Ladnmine;
+        public static GameObject Meteor;
+        public static GameObject CerbApples;
+        public static GameObject BlueTrail;
 
         // Token: 0x0400001F RID: 31
         private string[] plushieKeys = new string[]
@@ -216,7 +219,7 @@ namespace UltraEvents
         // Token: 0x0600000D RID: 13 RVA: 0x000020D0 File Offset: 0x000002D0
         public void SetConfigs()
         {
-            
+
             AmountOfTime = Config.Bind<float>("Values", "Time Between Events", 5f);
             this.maxAmountOfDeletedOjects = base.Config.Bind<int>("Values", "max amount of deleted objects", 20, "tied to the 'RemoveRandomObjectsEvent' you can choose what the maximum amount is");
             this.rmeoveEffects = base.Config.Bind<bool>("Values", "remove effects", true, "when this is disabled it wont remove any effects. (NOT RECOMMENDED DONT DO THIS VERY LAGGY!!!)");
@@ -262,6 +265,20 @@ namespace UltraEvents
             SceneManager.sceneLoaded += new UnityAction<Scene, LoadSceneMode>(this.SceneManager_sceneLoaded);
             Shader leShader = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.upsidedown")).LoadAllAssets()[0] as Shader;
             upsideDownMaterial = new Material(leShader);
+            Meteor = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.meteor")).LoadAllAssets()[0] as GameObject;
+            CerbApples = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.cerbapples")).LoadAllAssets()[0] as GameObject;
+            BlueTrail = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.bluetrail")).LoadAllAssets()[0] as GameObject;
+            /*StartCoroutine(ShaderManager.LoadShadersAsync());
+            StartCoroutine(ShaderManager.ApplyShaderToGameObject(Meteor));
+            foreach (Explosion explosion in Meteor.GetComponentsInChildren<Explosion>())
+            {
+                if (explosion.explosionChunk != null)
+                    StartCoroutine(ShaderManager.ApplyShaderToGameObject(explosion.explosionChunk));
+            }*/
+        }
+        void Start()
+        {
+            
         }
 
         // Token: 0x0600000F RID: 15 RVA: 0x00002B28 File Offset: 0x00000D28
