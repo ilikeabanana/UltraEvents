@@ -14,6 +14,7 @@ namespace UltraEvents.MonoBehaviours.Effects
         }
         public override void RemoveEffect()
         {
+            if (MonoSingleton<NewMovement>.instance.jumpPower == 90) return;
             MonoSingleton<NewMovement>.instance.jumpPower /= 2;
             base.RemoveEffect();
         }

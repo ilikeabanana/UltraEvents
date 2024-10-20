@@ -10,6 +10,7 @@ namespace UltraEvents.MonoBehaviours.Effects
         // Token: 0x060000C0 RID: 192 RVA: 0x000073E4 File Offset: 0x000055E4
         private void Update()
         {
+            if (MonoSingleton<OptionsManager>.Instance.paused) return;
             List<GameObject> plushies = UltraEventsPlugin.plushies;
             plushies.RemoveAll((GameObject x) => !x.name.ToLower().Contains("plushie"));
             GameObject gameObject = plushies[Random.Range(0, plushies.Count)];

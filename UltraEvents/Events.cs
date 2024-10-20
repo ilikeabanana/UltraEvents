@@ -308,7 +308,7 @@ namespace UltraEvents
         [EventDescription("Spawns landmines in a certain radius")]
         public void SpawnLandMines()
         {
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < UltraEventsPlugin.Instance.amountOfLandMines.Value; i++)
             {
                 Vector3 pos = ModUtils.GetRandomNavMeshPoint(MonoSingleton<NewMovement>.instance.transform.position, 70);
                 Instantiate(UltraEventsPlugin.Ladnmine, pos, Quaternion.identity);
@@ -801,7 +801,7 @@ namespace UltraEvents
         {
             AnnounceEvent("Here they come!");
 
-            for (int i = 0; i < Random.Range(50, 500); i++)
+            for (int i = 0; i < Random.Range(0, UltraEventsPlugin.Instance.maxAmountOfFilth.Value); i++)
             {
                 Instantiate(UltraEventsPlugin.Instance.Zombie, ModUtils.GetPlayerTransform().transform.position, Quaternion.identity);
                 yield return new WaitForSeconds(0.1f); // Adjust the delay as needed
@@ -835,7 +835,7 @@ namespace UltraEvents
         public void AddGravityToRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
-            int value = UltraEventsPlugin.Instance.maxAmountOfDeletedOjects.Value;
+            int value = UltraEventsPlugin.Instance.maxAmountOfObjects.Value;
             int num = Random.Range(1, Mathf.Min(list.Count, value) + 1);
             list = (from obj in list
                     where !SceneManager.GetSceneAt(0).GetRootGameObjects().Contains(obj.gameObject)
@@ -863,7 +863,7 @@ namespace UltraEvents
         public void RemoveRandomObjects()
         {
             List<MeshRenderer> list = Object.FindObjectsOfType<MeshRenderer>().ToList<MeshRenderer>();
-            int value = UltraEventsPlugin.Instance.maxAmountOfDeletedOjects.Value;
+            int value = UltraEventsPlugin.Instance.maxAmountOfObjects.Value;
             int num = Random.Range(1, Mathf.Min(list.Count, value) + 1);
             list = (from obj in list
                     where !SceneManager.GetSceneAt(0).GetRootGameObjects().Contains(obj.gameObject)
@@ -1334,7 +1334,7 @@ namespace UltraEvents
         public void GiveDualWield()
         {
             this.AnnounceEvent("its dual wielding time!!! *dual wields all over the place*");
-            int num = Random.Range(1, 10);
+            int num = Random.Range(1, UltraEventsPlugin.Instance.maxAmountOfDualWields.Value);
             for (int i = 0; i < num; i++)
             {
                 bool flag = MonoSingleton<GunControl>.Instance;

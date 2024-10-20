@@ -20,8 +20,8 @@ namespace UltraEvents.MonoBehaviours.Effects
         {
             foreach(Punch punch in punches)
             {
-                punch.force = 1000;
-                punch.damage = 10;
+                punch.force = UltraEventsPlugin.Instance.FalconPunchPower.Value * 100;
+                punch.damage = UltraEventsPlugin.Instance.FalconPunchPower.Value;
             }
         }
         public override void RemoveEffect()

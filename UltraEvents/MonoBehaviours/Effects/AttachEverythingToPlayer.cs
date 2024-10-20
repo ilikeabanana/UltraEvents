@@ -7,7 +7,7 @@ namespace UltraEvents.MonoBehaviours.Effects
     public class AttachEverythingToPlayer : Effect
     {
         public float speed = 25f;
-        public int maxAttachedObjects = 50; // New variable for maximum number of objects
+        public int maxAttachedObjects = UltraEventsPlugin.Instance.maxAmountOfObjects.Value; // New variable for maximum number of objects
 
         private List<Rigidbody> attachedObjects = new List<Rigidbody>(); // List to keep track of attached objects
 

@@ -69,7 +69,14 @@ namespace UltraEvents
         public ConfigEntry<float> AmountOfTime;
 
         // Token: 0x04000013 RID: 19
-        public ConfigEntry<int> maxAmountOfDeletedOjects;
+        public ConfigEntry<int> maxAmountOfObjects;
+        public ConfigEntry<int> maxAmountOfFilth;
+        public ConfigEntry<int> maxAmountOfDualWields;
+        public ConfigEntry<int> amountOfLandMines;
+        public ConfigEntry<int> amountOfMeteors;
+        public ConfigEntry<float> FalconPunchPower;
+        public ConfigEntry<float> TimeScaleFastMotion;
+        public ConfigEntry<float> TimeScaleSlowMotion;
 
         // Token: 0x04000014 RID: 20
         public ConfigEntry<bool> rmeoveEffects;
@@ -223,7 +230,15 @@ namespace UltraEvents
         {
 
             AmountOfTime = Config.Bind<float>("Values", "Time Between Events", 5f);
-            this.maxAmountOfDeletedOjects = base.Config.Bind<int>("Values", "max amount of deleted objects", 20, "tied to the 'RemoveRandomObjectsEvent' you can choose what the maximum amount is");
+            this.maxAmountOfObjects = base.Config.Bind<int>("Values", "max amount of objects", 20, "tied to the 'RemoveRandomObjectsEvent' you can choose what the maximum amount is");
+            this.maxAmountOfFilth = base.Config.Bind<int>("Values", "max amount of filth", 500, "tied to the 'EnemyHorde' you can choose what the maximum amount of filth is");
+            this.maxAmountOfDualWields = base.Config.Bind<int>("Values", "max amount of dual wields", 10, "tied to the 'GiveDualWield' you can choose what the maximum amount of dual wields is");
+            this.amountOfLandMines = base.Config.Bind<int>("Values", "amount of land mines", 30, "tied to the 'SpawnLandMines' you can choose how many landmines spawn");
+            this.amountOfMeteors = base.Config.Bind<int>("Values", "amount of meteors", 15, "tied to the 'Meteor' you can choose how many meteors spawn");
+            this.FalconPunchPower = base.Config.Bind<float>("Values", "falcon punch power", 15, "tied to the 'falcon punch' you can choose how much force and damage it does");
+            this.TimeScaleFastMotion = base.Config.Bind<float>("Values", "fast motion time", 3, "tied to the 'fast motion' you can choose how fast it goes");
+            this.TimeScaleSlowMotion = base.Config.Bind<float>("Values", "fast motion time", 0.3f, "tied to the 'fast motion' you can choose how slow it goes");
+            this.FalconPunchPower = base.Config.Bind<float>("Values", "falcon punch power", 15, "tied to the 'falcon punch' you can choose how much force and damage it does");
             this.rmeoveEffects = base.Config.Bind<bool>("Values", "remove effects", true, "when this is disabled it wont remove any effects. (NOT RECOMMENDED DONT DO THIS VERY LAGGY!!!)");
             this.announceEvents = base.Config.Bind<bool>("Values", "announce events", true, "when this is disabled it wont announce what event itll activate no more");
             this.everyFewSeconds = base.Config.Bind<bool>("Triggers", "every few seconds", true, "every few seconds an event will trigger");

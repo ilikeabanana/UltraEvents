@@ -13,6 +13,7 @@ namespace UltraEvents.MonoBehaviours.Effects
         static bool IsActive = false;
         private void Start()
         {
+            IsActive = true;
             base.StartCoroutine(this.GetCoin());
         }
 

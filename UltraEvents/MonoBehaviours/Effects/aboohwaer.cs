@@ -15,7 +15,7 @@ namespace UltraEvents.MonoBehaviours.Effects
         public void MakeWater()
         {
             this.llewaer = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            this.llewaer.name = "UT WATER!!!";
+            this.llewaer.name = "UE WATER!!!";
             this.llewaer.AddComponent<Rigidbody>();
             this.llewaer.GetComponent<Rigidbody>().isKinematic = true;
             this.llewaer.GetComponent<Collider>().isTrigger = true;

@@ -10,6 +10,8 @@ namespace UltraEvents.MonoBehaviours.Effects
     {
         void Start()
         {
+            if (MonoSingleton<PlayerUtilities>.instance == null)
+                gameObject.AddComponent<PlayerUtilities>();
             MonoSingleton<PlayerUtilities>.instance.NoWeapon();
         }
         public override void RemoveEffect()
