@@ -115,6 +115,8 @@ namespace UltraEvents
         public static GameObject Meteor;
         public static GameObject CerbApples;
         public static GameObject BlueTrail;
+        public static GameObject Creeper;
+        public static GameObject V1;
 
         // Token: 0x0400001F RID: 31
         private string[] plushieKeys = new string[]
@@ -268,6 +270,8 @@ namespace UltraEvents
             Meteor = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.meteor")).LoadAllAssets()[0] as GameObject;
             CerbApples = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.cerbapples")).LoadAllAssets()[0] as GameObject;
             BlueTrail = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.bluetrail")).LoadAllAssets()[0] as GameObject;
+            Creeper = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.creeper")).LoadAllAssets()[0] as GameObject;
+            V1 = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.v1")).LoadAllAssets()[0] as GameObject;
             /*StartCoroutine(ShaderManager.LoadShadersAsync());
             StartCoroutine(ShaderManager.ApplyShaderToGameObject(Meteor));
             foreach (Explosion explosion in Meteor.GetComponentsInChildren<Explosion>())
@@ -673,7 +677,15 @@ namespace UltraEvents
 
         public void UseRandomEvent(bool FromTrouble)
         {
-            var enabledEvents = events.Where(e => e.Value.Config.Value && !(e.Value.Method.Name == "DoEveryEvent" && FromTrouble)).ToList();
+            var enabledEvents = events.Where(e =>
+            {
+                bool configEnabled = e.Value.Config.Value;
+                bool isDoEveryEvent = e.Value.Method.Name == "DoEveryEvent";
+                bool fromTroubleCondition = !isDoEveryEvent || !FromTrouble;
+
+                return configEnabled && fromTroubleCondition;
+            }).ToList();
+
             if (enabledEvents.Count == 0)
             {
                 Console.WriteLine("No events are enabled.");

@@ -34,11 +34,40 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<SomethingWickedThisWayComes>();
             
         }
+        [EventDescription("Shrinks the player")]
+        public void ShrinkPlayer()
+        {
+            ModUtils.GetPlayerTransform().transform.localScale /= 2;
+        }
+        [EventDescription("Lowers the gravity")]
+        public void LowGravity()
+        {
+            AnnounceEvent("I lowered gravity");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<LowGravity>();
+        }
+        [EventDescription("Makes your projectiles home at enemies")]
+        public void HomingProj()
+        {
+            AnnounceEvent("Your projectiles now home at enemies");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<ProjectilesHomeAtEnemies>();
+        }
         [EventDescription("Makes your punch force 1 thousand", "FALCON PUNCH")]
         public void FALCONPUNCHH()
         {
             UltraEventsPlugin.Instance.EffectManager.AddComponent<FALCONPUNCH>();
             AnnounceEvent("FALCON PUNCH");
+        }
+        [EventDescription("It will spawn a clone of you fighting with you")]
+        public void CloneV1()
+        {
+            Instantiate(UltraEventsPlugin.V1, ModUtils.GetPlayerTransform().transform.position, Quaternion.identity);
+            AnnounceEvent("i cloned you :D");
+        }
+        [EventDescription("removes your hud")]
+        public void RemoveHUD()
+        {
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<NoHudEffect>();
+            AnnounceEvent("no hud?");
         }
         [EventDescription("Yeets every object with gravity")]
         public void YEETAll()
@@ -1359,6 +1388,36 @@ namespace UltraEvents
                 }
             }
         }
+        [EventDescription("Makes your jump height 2 times higher")]
+        public void MarioTime()
+        {
+            this.AnnounceEvent("Mario time");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<MarioJumpEffect>();
+        }
+        [EventDescription("Removes every weapon")]
+        public void NoWeapons()
+        {
+            this.AnnounceEvent("no weapons?");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<NoWeaponss>();
+        }
+        [EventDescription("Removes every fist")]
+        public void NoFist()
+        {
+            this.AnnounceEvent("no fists?");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<NoFists>();
+        }
+        [EventDescription("Reduces the amount of damage taken")]
+        public void LessDamage()
+        {
+            this.AnnounceEvent("You take less damage now");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<LessDamageEffect>();
+        }
+        [EventDescription("Increases the amount of damage taken")]
+        public void MoreDamage()
+        {
+            this.AnnounceEvent("You take more damage now");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<MoreDamageEffect>();
+        }
 
         // Token: 0x06000053 RID: 83 RVA: 0x000050AD File Offset: 0x000032AD
         [EventDescription("Decreases the speed")]
@@ -1366,6 +1425,12 @@ namespace UltraEvents
         {
             this.AnnounceEvent("wow this is slow");
             UltraEventsPlugin.Instance.EffectManager.AddComponent<Slowmotion>();
+        }
+        [EventDescription("Randomizes time")]
+        public void Timewarp()
+        {
+            this.AnnounceEvent("Time is warping!");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<TimeWarp>();
         }
 
         // Token: 0x06000054 RID: 84 RVA: 0x000050C8 File Offset: 0x000032C8
@@ -1571,8 +1636,7 @@ namespace UltraEvents
         [EventDescription("It kills every enemy")]
         public void KillAllEnemies()
         {
-            List<EnemyIdentifier> list = Object.FindObjectsOfType<EnemyIdentifier>().ToList<EnemyIdentifier>();
-            list.RemoveAll((EnemyIdentifier x) => x.dead);
+            List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
             foreach (EnemyIdentifier enemyIdentifier in list)
             {
                 enemyIdentifier.InstaKill();
@@ -1614,7 +1678,7 @@ namespace UltraEvents
         public void Kaboom()
         {
             this.AnnounceEvent("KABOOOOOOM");
-            EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
+            EnemyIdentifier[] array = ModUtils.GetEveryEnemyThatAreAlive().ToArray();
             List<ExplosionController> list = Resources.FindObjectsOfTypeAll<ExplosionController>().ToList<ExplosionController>();
             list.RemoveAll((ExplosionController x) => x.gameObject.name.ToLower().Contains("fire"));
             foreach (EnemyIdentifier enemyIdentifier in array)

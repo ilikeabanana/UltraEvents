@@ -156,15 +156,24 @@
     <Compile Include="MonoBehaviours\Effects\InvisProj.cs" />
     <Compile Include="MonoBehaviours\Effects\InvisEnemies.cs" />
     <Compile Include="MonoBehaviours\Effects\Lagging.cs" />
+    <Compile Include="MonoBehaviours\Effects\MarioJumpEffect.cs" />
+    <Compile Include="MonoBehaviours\Effects\MoreDamageEffect.cs" />
+    <Compile Include="MonoBehaviours\Effects\LessDamageEffect.cs" />
+    <Compile Include="MonoBehaviours\Effects\LowGravity.cs" />
     <Compile Include="MonoBehaviours\Effects\NailToCoin.cs" />
+    <Compile Include="MonoBehaviours\Effects\NoHudEffect.cs" />
     <Compile Include="MonoBehaviours\Effects\NoRicoshots.cs" />
+    <Compile Include="MonoBehaviours\Effects\NoFists.cs" />
+    <Compile Include="MonoBehaviours\Effects\NoWeaponss.cs" />
     <Compile Include="MonoBehaviours\Effects\PixelReducer.cs" />
     <Compile Include="MonoBehaviours\Effects\PlushRain.cs" />
+    <Compile Include="MonoBehaviours\Effects\ProjectilesHomeAtEnemies.cs" />
     <Compile Include="MonoBehaviours\Effects\Slowmotion.cs" />
     <Compile Include="MonoBehaviours\Effects\SomethingWickedThisWayComes.cs" />
     <Compile Include="MonoBehaviours\Effects\SpawnLandminesEveryFewSeconds.cs" />
     <Compile Include="MonoBehaviours\Effects\sSchizophreniaUpdateEffect.cs" />
     <Compile Include="MonoBehaviours\Effects\TimeStop.cs" />
+    <Compile Include="MonoBehaviours\Effects\TimeWarp.cs" />
     <Compile Include="MonoBehaviours\Effects\UpsideDown.cs" />
     <Compile Include="MonoBehaviours\Effects\VirtualInsanityEffect.cs" />
     <Compile Include="MonoBehaviours\HealthRememberer.cs" />
@@ -196,6 +205,8 @@
     <EmbeddedResource Include="Bundles\meteor" />
     <EmbeddedResource Include="Bundles\cerbapples" />
     <EmbeddedResource Include="Bundles\bluetrail" />
+    <EmbeddedResource Include="Bundles\creeper" />
+    <EmbeddedResource Include="Bundles\v1" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
