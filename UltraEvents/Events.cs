@@ -1592,7 +1592,7 @@ namespace UltraEvents
 
         IEnumerator MeteorShower()
         {
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < UltraEventsPlugin.Instance.amountOfMeteors.Value; i++)
             {
                 // Get a random Y rotation for the meteor
                 Quaternion randomYRotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);

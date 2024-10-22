@@ -19,12 +19,15 @@ using Random = UnityEngine.Random;
 using UltraEvents.Utils;
 using UltraEvents.MonoBehaviours;
 using Configgy;
+using TMPro;
 
 namespace UltraEvents
 {
+
     // TODO Review this file and update to your own requirements.
 
     [BepInPlugin(MyGUID, PluginName, VersionString)]
+    [HarmonyPatch]
     public class UltraEventsPlugin : BaseUnityPlugin
     {
         public static Dictionary<string, (MethodInfo Method, ConfigEntry<bool> Config)> events = new Dictionary<string, (MethodInfo, ConfigEntry<bool>)>();
@@ -81,6 +84,7 @@ namespace UltraEvents
         // Token: 0x04000014 RID: 20
         public ConfigEntry<bool> rmeoveEffects;
         public ConfigEntry<bool> DebugThing;
+        public ConfigEntry<bool> DiscordActivity;
         public ConfigEntry<KeyCode> DoEvent;
         public ConfigEntry<KeyCode> RemoveEffects;
 
@@ -124,6 +128,7 @@ namespace UltraEvents
         public static GameObject BlueTrail;
         public static GameObject Creeper;
         public static GameObject V1;
+        public GameObject Countodnw;
 
         // Token: 0x0400001F RID: 31
         private string[] plushieKeys = new string[]
@@ -213,7 +218,11 @@ namespace UltraEvents
         public ShaderApplier shaderApplier;
         public Material upsideDownMaterial;
 
-
+        [HarmonyPatch(typeof(DiscordController), nameof(DiscordController.UpdateStyle))]
+        public static bool Prefix()
+        {
+            return !UltraEventsPlugin.Instance.DiscordActivity.Value;
+        }
         public void UpsideDown()
         {
             // Apply the upside-down effect
@@ -237,12 +246,13 @@ namespace UltraEvents
             this.amountOfMeteors = base.Config.Bind<int>("Values", "amount of meteors", 15, "tied to the 'Meteor' you can choose how many meteors spawn");
             this.FalconPunchPower = base.Config.Bind<float>("Values", "falcon punch power", 15, "tied to the 'falcon punch' you can choose how much force and damage it does");
             this.TimeScaleFastMotion = base.Config.Bind<float>("Values", "fast motion time", 3, "tied to the 'fast motion' you can choose how fast it goes");
-            this.TimeScaleSlowMotion = base.Config.Bind<float>("Values", "fast motion time", 0.3f, "tied to the 'fast motion' you can choose how slow it goes");
+            this.TimeScaleSlowMotion = base.Config.Bind<float>("Values", "slows motion time", 0.3f, "tied to the 'slow motion' you can choose how slow it goes");
             this.FalconPunchPower = base.Config.Bind<float>("Values", "falcon punch power", 15, "tied to the 'falcon punch' you can choose how much force and damage it does");
             this.rmeoveEffects = base.Config.Bind<bool>("Values", "remove effects", true, "when this is disabled it wont remove any effects. (NOT RECOMMENDED DONT DO THIS VERY LAGGY!!!)");
             this.announceEvents = base.Config.Bind<bool>("Values", "announce events", true, "when this is disabled it wont announce what event itll activate no more");
             this.everyFewSeconds = base.Config.Bind<bool>("Triggers", "every few seconds", true, "every few seconds an event will trigger");
             this.DebugThing = base.Config.Bind<bool>("Values", "Debug", false, "This is for the developer to see if events trigger correctly");
+            this.DiscordActivity = base.Config.Bind<bool>("Values", "Discord Activity", true, "If this is enabled in your discord status it will show the current event instead of style");
             this.DoEvent = base.Config.Bind<KeyCode>("Values", "Do Event button", KeyCode.T, "Only used when On Key Bind Press is on");
             this.RemoveEffects = base.Config.Bind<KeyCode>("Values", "Remove Effects button", KeyCode.M, "Only used when On Key Bind Press is on");
             UltraEventsPlugin.OnSecretReceived = base.Config.Bind<bool>("Triggers", "On Secret Found", false, "will trigger an event when you find a secret");
@@ -287,6 +297,7 @@ namespace UltraEvents
             BlueTrail = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.bluetrail")).LoadAllAssets()[0] as GameObject;
             Creeper = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.creeper")).LoadAllAssets()[0] as GameObject;
             V1 = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.v1")).LoadAllAssets()[0] as GameObject;
+            Countodnw = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("UltraEvents.Bundles.countdown")).LoadAllAssets()[0] as GameObject;
             /*StartCoroutine(ShaderManager.LoadShadersAsync());
             StartCoroutine(ShaderManager.ApplyShaderToGameObject(Meteor));
             foreach (Explosion explosion in Meteor.GetComponentsInChildren<Explosion>())
@@ -371,6 +382,10 @@ namespace UltraEvents
             {
                 ShaderApplier shaderApplier = gameObject.AddComponent<ShaderApplier>();
                 shaderApplier.material = upsideDownMaterial;
+            }
+            if(Countodnw != null)
+            {
+                Instantiate(Countodnw);
             }
             base.Logger.LogInfo("no issues at all");
         }
@@ -633,6 +648,7 @@ namespace UltraEvents
                     if (!flag3)
                     {
                         this.timer -= Time.fixedDeltaTime;
+                        Countodnw.transform.Find("Countdown").Find("EventCountdown").GetComponent<TextMeshProUGUI>().text = timer.ToString();
                         bool flag4 = this.timer <= 0f;
                         if (flag4)
                         {
@@ -713,7 +729,12 @@ namespace UltraEvents
             {
                 MonoSingleton<HudMessageReceiver>.instance.SendHudMessage($"Triggering event: {randomEvent.Key}");
             }
-
+            // Update the activity details to include the current event
+            if (DiscordActivity.Value)
+            {
+                DiscordController.Instance.cachedActivity.Details = "Current Active Event: " + randomEvent.Key;
+                DiscordController.Instance.SendActivity();
+            }
             randomEvent.Value.Method.Invoke(Theevents, null);
 
         }
@@ -728,4 +749,6 @@ namespace UltraEvents
             public string link;
         }
     }
+    
 }
+

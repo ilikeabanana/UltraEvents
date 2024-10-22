@@ -207,6 +207,7 @@
     <EmbeddedResource Include="Bundles\bluetrail" />
     <EmbeddedResource Include="Bundles\creeper" />
     <EmbeddedResource Include="Bundles\v1" />
+    <EmbeddedResource Include="Bundles\countdown" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
