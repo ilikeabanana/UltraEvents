@@ -85,6 +85,7 @@ namespace UltraEvents
         public ConfigEntry<bool> rmeoveEffects;
         public ConfigEntry<bool> DebugThing;
         public ConfigEntry<bool> DiscordActivity;
+        public ConfigEntry<bool> TimerText;
         public ConfigEntry<KeyCode> DoEvent;
         public ConfigEntry<KeyCode> RemoveEffects;
 
@@ -129,6 +130,7 @@ namespace UltraEvents
         public static GameObject Creeper;
         public static GameObject V1;
         public GameObject Countodnw;
+        public GameObject Countdown;
 
         // Token: 0x0400001F RID: 31
         private string[] plushieKeys = new string[]
@@ -253,6 +255,8 @@ namespace UltraEvents
             this.everyFewSeconds = base.Config.Bind<bool>("Triggers", "every few seconds", true, "every few seconds an event will trigger");
             this.DebugThing = base.Config.Bind<bool>("Values", "Debug", false, "This is for the developer to see if events trigger correctly");
             this.DiscordActivity = base.Config.Bind<bool>("Values", "Discord Activity", true, "If this is enabled in your discord status it will show the current event instead of style");
+            this.TimerText = base.Config.Bind<bool>("Values", "Text timer", true, "If this is enabled it will show a timer that shows when the next event happens");
+            TimerText.SettingChanged += TimerText_SettingChanged;
             this.DoEvent = base.Config.Bind<KeyCode>("Values", "Do Event button", KeyCode.T, "Only used when On Key Bind Press is on");
             this.RemoveEffects = base.Config.Bind<KeyCode>("Values", "Remove Effects button", KeyCode.M, "Only used when On Key Bind Press is on");
             UltraEventsPlugin.OnSecretReceived = base.Config.Bind<bool>("Triggers", "On Secret Found", false, "will trigger an event when you find a secret");
@@ -266,6 +270,14 @@ namespace UltraEvents
             base.Logger.LogInfo("loadedAllConfigs");
             configBuilder = new ConfigBuilder();
             configBuilder.BuildAll();
+        }
+
+        private void TimerText_SettingChanged(object sender, EventArgs e)
+        {
+            if(Countdown != null)
+            {
+                Countdown.SetActive(TimerText.Value);
+            }
         }
 
         // Token: 0x0600000E RID: 14 RVA: 0x00002A14 File Offset: 0x00000C14
@@ -385,7 +397,8 @@ namespace UltraEvents
             }
             if(Countodnw != null)
             {
-                Instantiate(Countodnw);
+                Countdown = Instantiate(Countodnw);
+                Countdown.SetActive(TimerText.Value);
             }
             base.Logger.LogInfo("no issues at all");
         }
@@ -638,35 +651,70 @@ namespace UltraEvents
         // Token: 0x0600001A RID: 26 RVA: 0x00002F6C File Offset: 0x0000116C
         private void Update()
         {
-            bool flag = ModUtils.GetPlayerTransform() == null;
-            if (!flag)
+            // Early return if the player transform is not available
+            var playerTransform = ModUtils.GetPlayerTransform();
+            if (playerTransform == null) return;
+
+            // Early return if the gameplay scene is invalid or player transform is disabled
+            if (!playerTransform.enabled || !UltraEventsPlugin.IsGameplayScene()) return;
+
+            // Handle countdown event trigger
+            HandleCountdownEvent();
+
+            // Handle event triggers via input
+            HandleInputEvents();
+        }
+
+        private void HandleCountdownEvent()
+        {
+            if (!everyFewSeconds.Value) return;
+
+            timer -= Time.fixedDeltaTime;
+            if(Countdown != null)
             {
-                bool flag2 = !ModUtils.GetPlayerTransform().enabled || !UltraEventsPlugin.IsGameplayScene();
-                if (!flag2)
-                {
-                    bool flag3 = !this.everyFewSeconds.Value;
-                    if (!flag3)
-                    {
-                        this.timer -= Time.fixedDeltaTime;
-                        Countodnw.transform.Find("Countdown").Find("EventCountdown").GetComponent<TextMeshProUGUI>().text = timer.ToString();
-                        bool flag4 = this.timer <= 0f;
-                        if (flag4)
-                        {
-                            this.UseRandomEventAndRemoveEffects();
-                            this.timer = this.AmountOfTime.Value;
-                        }
-                    }
-                }
+                // Extract integer and decimal parts of the timer
+                int integerPart = Mathf.FloorToInt(timer);
+                float decimalPart = timer - integerPart;
+
+                // Format the text with rich text size for the decimal part
+                string formattedTime = $"{integerPart}<size=32>{decimalPart.ToString(".00")}</size>";
+                // Update the countdown text with two decimal places
+                var countdownText = Countdown.transform
+                    .Find("Countdown")
+                    .Find("EventCountdown")
+                    .GetComponent<TextMeshProUGUI>();
+
+                countdownText.text = formattedTime;
             }
-            if(Input.GetKeyDown(DoEvent.Value) && OnButtonPress.Value)
+            
+
+            // Trigger event when the timer reaches zero
+            if (timer <= 0f)
             {
                 UseRandomEventAndRemoveEffects();
-            }
-            if (Input.GetKeyDown(RemoveEffects.Value) && OnButtonPress.Value)
-            {
-                RemoveEffect();
+                timer = AmountOfTime.Value;
             }
         }
+
+
+        private void HandleInputEvents()
+        {
+            if (OnButtonPress.Value)
+            {
+                // Trigger event on button press
+                if (Input.GetKeyDown(DoEvent.Value))
+                {
+                    UseRandomEventAndRemoveEffects();
+                }
+
+                // Remove effects on button press
+                if (Input.GetKeyDown(RemoveEffects.Value))
+                {
+                    RemoveEffect();
+                }
+            }
+        }
+
 
         // Token: 0x0600001B RID: 27 RVA: 0x00002FFC File Offset: 0x000011FC
         public void UseRandomEventAndRemoveEffects()
