@@ -40,10 +40,6 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass_publicized">
-    </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\..\AppData\Roaming\r2modmanPlus-local\ULTRAKILL\profiles\UltraEvents\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -95,6 +91,10 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
@@ -110,6 +110,10 @@
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.UI.dll</HintPath>
@@ -168,6 +172,7 @@
     <Compile Include="MonoBehaviours\Effects\PixelReducer.cs" />
     <Compile Include="MonoBehaviours\Effects\PlushRain.cs" />
     <Compile Include="MonoBehaviours\Effects\ProjectilesHomeAtEnemies.cs" />
+    <Compile Include="MonoBehaviours\Effects\ScreenDistortion.cs" />
     <Compile Include="MonoBehaviours\Effects\Slowmotion.cs" />
     <Compile Include="MonoBehaviours\Effects\SomethingWickedThisWayComes.cs" />
     <Compile Include="MonoBehaviours\Effects\SpawnLandminesEveryFewSeconds.cs" />
@@ -180,6 +185,11 @@
     <Compile Include="MonoBehaviours\MoveAndTurn.cs" />
     <Compile Include="MonoBehaviours\RemoveOnUnseen.cs" />
     <Compile Include="MonoBehaviours\ShaderApplier.cs" />
+    <Compile Include="MonoBehaviours\SimonSays\Says\Dash.cs" />
+    <Compile Include="MonoBehaviours\SimonSays\Says\Shoot.cs" />
+    <Compile Include="MonoBehaviours\SimonSays\Says\SwapWeapons.cs" />
+    <Compile Include="MonoBehaviours\SimonSays\Says\KillAnEnemy.cs" />
+    <Compile Include="MonoBehaviours\SimonSays\SimonSaysIt.cs" />
     <Compile Include="MonoBehaviours\Task.cs" />
     <Compile Include="MonoBehaviours\TaskManager.cs" />
     <Compile Include="MonoBehaviours\Tasks\KillEnemyTask.cs" />
@@ -210,7 +220,9 @@
     <EmbeddedResource Include="Bundles\countdown" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="MPfours\My name is David.mp4" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MPfours\.x2mate.com-Mewing_GOAT.mp4" />
     <EmbeddedResource Include="MPfours\Anakin has 50 million power.mp4" />

@@ -132,6 +132,8 @@ namespace UltraEvents
         public GameObject Countodnw;
         public GameObject Countdown;
 
+        public static GameObject Idol;
+
         // Token: 0x0400001F RID: 31
         private string[] plushieKeys = new string[]
         {
@@ -144,15 +146,18 @@ namespace UltraEvents
             "DevPlushie (Meganeko)",
             "DevPlushie (Tucker)",
             "DevPlushie (BigRock)",
+            "DevPlushie (King Gizzard)",
             "DevPlushie (Dawg)",
             "DevPlushie (Sam)",
             "Mandy Levitating",
             "DevPlushie (Cameron)",
+            "DevPlushie (FlyingDog)",
             "DevPlushie (Gianni)",
             "DevPlushie (Salad)",
             "DevPlushie (Mandy)",
             "DevPlushie (Joy)",
             "DevPlushie (Weyte)",
+            "DevPlushie (Zombie)",
             "DevPlushie (Heckteck)",
             "DevPlushie (Hakita)",
             "DevPlushie (Lenval)",
@@ -191,6 +196,7 @@ namespace UltraEvents
                 Log.LogInfo(eventEntry.Key);
                 try
                 {
+                    if (eventEntry.Key == "DoEveryEvent") continue;
                     eventEntry.Value.Config.Value = true;
                 }
                 catch (Exception e)
@@ -376,6 +382,11 @@ namespace UltraEvents
             {
                 base.StartCoroutine(this.LoadLightning());
             }
+            bool flag11 = UltraEventsPlugin.Idol == null;
+            if (flag11)
+            {
+                base.StartCoroutine(this.LoadIdol());
+            }
             // Set the initial intensity to 0 (normal view)
             upsideDownMaterial.SetFloat("_Intensity", 0f);
             GameObject gameObject = null;
@@ -467,6 +478,15 @@ namespace UltraEvents
             AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
             yield return new WaitUntil(() => RodHandle.IsDone);
             this.fishingCanvas = RodHandle.Result;
+            yield break;
+        }
+        // Token: 0x06000012 RID: 18 RVA: 0x00002C08 File Offset: 0x00000E08
+        private IEnumerator LoadIdol()
+        {
+            string prefabKey = "Assets/Prefabs/Enemies/Idol.prefab";
+            AsyncOperationHandle<GameObject> RodHandle = Addressables.LoadAssetAsync<GameObject>(prefabKey);
+            yield return new WaitUntil(() => RodHandle.IsDone);
+            Idol = RodHandle.Result;
             yield break;
         }
         private IEnumerator LoadFilth()
@@ -649,7 +669,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600001A RID: 26 RVA: 0x00002F6C File Offset: 0x0000116C
-        private void Update()
+        private void FixedUpdate()
         {
             // Early return if the player transform is not available
             var playerTransform = ModUtils.GetPlayerTransform();
@@ -772,6 +792,14 @@ namespace UltraEvents
             }
 
             var randomEvent = enabledEvents[Random.Range(0, enabledEvents.Count)];
+            if (randomEvent.Value.Method.GetCustomAttribute<EventDescriptionAttribute>().requiresEnemies)
+            {
+                if(ModUtils.GetEveryEnemy().Count <= 0)
+                {
+                    UseRandomEvent(false);
+                    return;
+                }
+            }
             Console.WriteLine($"Triggering event: {randomEvent.Key}");
             if (DebugThing.Value)
             {

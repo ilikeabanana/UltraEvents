@@ -28,7 +28,7 @@ namespace UltraEvents.MonoBehaviours
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
             List<Canvas> source = Object.FindObjectsOfType<Canvas>().ToList<Canvas>();
-            Canvas canvas = source.First((Canvas x) => x.name.ToLower() == "canvas" && x.GetComponent<HUDOptions>() != null);
+            Canvas canvas = source.First((Canvas x) => x.name.ToLower() == "canvas");
             this.tasksText = new GameObject("tasksText");
             this.tasksText.transform.parent = canvas.transform;
             this.tasksText.transform.localPosition = new Vector3(-527.5945f, 313f, 0f);

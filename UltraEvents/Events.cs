@@ -20,6 +20,7 @@ using Random = UnityEngine.Random;
 using UnityEngine.InputSystem;
 using HarmonyLib;
 using TMPro;
+using UltraEvents.MonoBehaviours.SimonSays.Says;
 
 namespace UltraEvents
 {
@@ -37,6 +38,7 @@ namespace UltraEvents
         [EventDescription("Shrinks the player")]
         public void ShrinkPlayer()
         {
+            AnnounceEvent("You're tiny now");
             ModUtils.GetPlayerTransform().transform.localScale /= 2;
         }
         [EventDescription("Lowers the gravity")]
@@ -69,7 +71,7 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<NoHudEffect>();
             AnnounceEvent("no hud?");
         }
-        [EventDescription("Yeets every object with gravity")]
+        [EventDescription("Yeets every object with gravity", requiresEnemies: true)]
         public void YEETAll()
         {
             Rigidbody[] rbs = FindObjectsOfType<Rigidbody>();
@@ -316,7 +318,7 @@ namespace UltraEvents
             
 
         }
-        [EventDescription("Zaps a random enemy")]
+        [EventDescription("Zaps a random enemy", requiresEnemies: true)]
         public void ChainLightning()
         {
             EnemyIdentifier enemy = ModUtils.getRandomEnemyThatIsAlive();
@@ -358,13 +360,14 @@ namespace UltraEvents
             AnnounceEvent("Spawning landmines on you");
 
         }
-        [EventDescription("Swaps the player's position with a random enemy")]
+        [EventDescription("Swaps the player's position with a random enemy", requiresEnemies: true)]
         public void SwapPlayerWithEnemy()
         {
             EnemyIdentifier enemy = ModUtils.getRandomEnemyThatIsAlive();
             Vector3 enemyPos = enemy.transform.position;
             enemy.transform.position = MonoSingleton<NewMovement>.instance.transform.position;
             MonoSingleton<NewMovement>.instance.transform.position = enemyPos;
+            AnnounceEvent("You swapped positions with " + enemy.FullName);
         }
         [EventDescription("Scales everything slightly")]
         public void ScaleEverything()
@@ -398,7 +401,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000021 RID: 33 RVA: 0x0000396C File Offset: 0x00001B6C
-        [EventDescription("Turns a random enemy into your ally")]
+        [EventDescription("Turns a random enemy into your ally", requiresEnemies: true)]
         public void MakeAlly()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -411,7 +414,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000022 RID: 34 RVA: 0x000039F8 File Offset: 0x00001BF8
-        [EventDescription("gives them a +2 damage buff and a +10 health buff")]
+        [EventDescription("gives them a +2 damage buff and a +10 health buff", requiresEnemies: true)]
         public void NanoMachinesSon()
         {
             List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
@@ -435,7 +438,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000023 RID: 35 RVA: 0x00003AD8 File Offset: 0x00001CD8
-        [EventDescription("makes an enemy 10 times bigger, and turns them into radiance 3")]
+        [EventDescription("makes an enemy 10 times bigger, and turns them into radiance 3", requiresEnemies: true)]
         public void RulesOfNature()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -500,7 +503,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000028 RID: 40 RVA: 0x00003C7C File Offset: 0x00001E7C
-        [EventDescription("Gives a bossbar to every enemy")]
+        [EventDescription("Gives a bossbar to every enemy", requiresEnemies: true)]
         public void BossBarForEveryone()
         {
             List<EnemyIdentifier> array = ModUtils.GetEveryEnemy();
@@ -512,7 +515,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000029 RID: 41 RVA: 0x00003CC0 File Offset: 0x00001EC0
-        [EventDescription("Makes every enemy oiled up")]
+        [EventDescription("Makes every enemy oiled up", requiresEnemies: true)]
         public void OilUp()
         {
             List<EnemyIdentifier> array = ModUtils.GetEveryEnemy();
@@ -580,7 +583,7 @@ namespace UltraEvents
         
 
 
-        [EventDescription("Heals enemies to max health")]
+        [EventDescription("Heals enemies to max health", requiresEnemies: true)]
         public void HealAllEnemies()
         {
             List<EnemyIdentifier> enemies = ModUtils.GetEveryEnemyThatAreAlive();
@@ -735,7 +738,7 @@ namespace UltraEvents
                 
             }
         }
-        [EventDescription("Makes every enemy's weakpoint 3 times larger")]
+        [EventDescription("Makes every enemy's weakpoint 3 times larger", requiresEnemies: true)]
         public void GiantHeads()
         {
             List<EnemyIdentifier> identifiers = ModUtils.GetEveryEnemyThatAreAlive();
@@ -765,7 +768,7 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<InvertControls>();
             AnnounceEvent("Get inverted");
         }
-        [EventDescription("Makes 2 enemies swap positions")]
+        [EventDescription("Makes 2 enemies swap positions", requiresEnemies: true)]
         public void Swap2Enemies()
         {
             List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
@@ -777,6 +780,7 @@ namespace UltraEvents
                 {
                     enemy1 = list[Random.Range(0, list.Count)];
                 }
+                AnnounceEvent(enemy1.FullName + " swapped places with " + enemy2.FullName);
             }
         }
         [EventDescription("Makes projectiles bounce")]
@@ -785,7 +789,7 @@ namespace UltraEvents
             UltraEventsPlugin.Instance.EffectManager.AddComponent<BouncyProj>();
             AnnounceEvent("Bullets bounce now!");
         }
-        [EventDescription("Makes every enemy tiny")]
+        [EventDescription("Makes every enemy tiny", requiresEnemies: true)]
         public void TinyEnemies()
         {
             //Kinda just like you tbh
@@ -945,7 +949,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000038 RID: 56 RVA: 0x00004490 File Offset: 0x00002690
-        [EventDescription("Duplicates every enemy")]
+        [EventDescription("Duplicates every enemy", requiresEnemies: true)]
         public void DupeAllEnemies()
         {
             this.AnnounceEvent("ever heard of mitosis?");
@@ -970,7 +974,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600003A RID: 58 RVA: 0x000045A4 File Offset: 0x000027A4
-        [EventDescription("Spawns a virtue insignia on every enemy")]
+        [EventDescription("Spawns a virtue insignia on every enemy", requiresEnemies: true)]
         public void Alakablam()
         {
             this.AnnounceEvent("Alakablam");
@@ -1218,7 +1222,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000048 RID: 72 RVA: 0x00004B78 File Offset: 0x00002D78
-        [EventDescription("Makes you teleport to a random enemy")]
+        [EventDescription("Makes you teleport to a random enemy", requiresEnemies: true)]
         public void TeleportToEnemy()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -1251,7 +1255,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004B RID: 75 RVA: 0x00004C40 File Offset: 0x00002E40
-        [EventDescription("Turns a random enemy into a puppet (one of those blood enemies in 7-3")]
+        [EventDescription("Turns a random enemy into a puppet (one of those blood enemies in 7-3)", requiresEnemies: true)]
         public void TurnEnemyIntoPuppet()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -1283,7 +1287,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600004D RID: 77 RVA: 0x00004D50 File Offset: 0x00002F50
-        [EventDescription("Sands every enemy")]
+        [EventDescription("Sands every enemy", requiresEnemies: true)]
         public void noHeals()
         {
             this.AnnounceEvent("no heals?");
@@ -1624,7 +1628,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005A RID: 90 RVA: 0x00005434 File Offset: 0x00003634
-        [EventDescription("Kills a random enemy")]
+        [EventDescription("Kills a random enemy", requiresEnemies: true)]
         public void KillRandomEnemy()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -1633,7 +1637,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005B RID: 91 RVA: 0x000054AC File Offset: 0x000036AC
-        [EventDescription("It kills every enemy")]
+        [EventDescription("It kills every enemy", requiresEnemies: true)]
         public void KillAllEnemies()
         {
             List<EnemyIdentifier> list = ModUtils.GetEveryEnemyThatAreAlive();
@@ -1651,11 +1655,11 @@ namespace UltraEvents
             this.AnnounceEvent("Here let me choose for you");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
             int num = Random.Range(0, gunControl.slots.Count);
-            gunControl.SwitchWeapon(num, gunControl.slots[num - 1], true, false, false, false);
+            gunControl.SwitchWeapon(num, Random.Range(0,2), false, false, false);
         }
 
         // Token: 0x0600005D RID: 93 RVA: 0x00005588 File Offset: 0x00003788
-        [EventDescription("Buffs a random enemy")]
+        [EventDescription("Buffs a random enemy", requiresEnemies: true)]
         public void BuffEnemy()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -1664,7 +1668,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005E RID: 94 RVA: 0x00005600 File Offset: 0x00003800
-        [EventDescription("duplicates a random enemy")]
+        [EventDescription("duplicates a random enemy", requiresEnemies: true)]
         public void DupeEnemy()
         {
             EnemyIdentifier enemyIdentifier = ModUtils.getRandomEnemyThatIsAlive();
@@ -1674,7 +1678,7 @@ namespace UltraEvents
         }
 
         // Token: 0x0600005F RID: 95 RVA: 0x000056A8 File Offset: 0x000038A8
-        [EventDescription("Explodes every enemy")]
+        [EventDescription("Explodes every enemy", requiresEnemies: true)]
         public void Kaboom()
         {
             this.AnnounceEvent("KABOOOOOOM");
@@ -1694,8 +1698,59 @@ namespace UltraEvents
         {
             this.AnnounceEvent("go back to the other weapon");
             GunControl gunControl = Object.FindObjectOfType<GunControl>();
-            gunControl.SwitchWeapon(gunControl.lastUsedSlot, gunControl.slots[gunControl.lastUsedSlot - 1], true, false, false, false);
+            if (gunControl.slots[gunControl.lastSlotIndex - 1] != null)
+            {
+                gunControl.SwitchWeapon(gunControl.lastSlotIndex, new int?(gunControl.lastVariationIndex), false, false, false);
+            }
         }
+
+        [EventDescription("Makes your screen glitchy")]
+        public void GlitchyScreen()
+        {
+            this.AnnounceEvent("Glitching");
+            UltraEventsPlugin.Instance.EffectManager.AddComponent<ScreenDistortion>();
+        }
+
+        [EventDescription("Does a simon says")]
+        public void SimonSays()
+        {
+            Type randomType = GetRandomMonoBehaviourFromNamespace("UltraEvents.MonoBehaviours.SimonSays.Says");
+            if (randomType != null)
+            {
+                Debug.Log("Selected MonoBehaviour: " + randomType.Name);
+                UltraEventsPlugin.Instance.gameObject.AddComponent(randomType); // Add to the current GameObject
+            }
+            else
+            {
+                Debug.Log("No MonoBehaviours found in the namespace.");
+            }
+        }
+
+        Type GetRandomMonoBehaviourFromNamespace(string targetNamespace)
+        {
+            // Get all types from the current assembly
+            Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
+
+            // Filter: must be in the namespace, inherit from MonoBehaviour, and not be abstract
+            Type[] monoBehaviours = allTypes
+                .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(MonoBehaviour)) && t.Namespace == targetNamespace)
+                .ToArray();
+
+            // Return a random one if available
+            return monoBehaviours.Length > 0 ? monoBehaviours[UnityEngine.Random.Range(0, monoBehaviours.Length)] : null;
+        }
+
+        [EventDescription("Spawns an idol on every enemy")]
+        public void SpawnIdolOnEnemies()
+        {
+            this.AnnounceEvent("Idols to every enemy!");
+            List<EnemyIdentifier> enemies = EnemyTracker.Instance.GetCurrentEnemies();
+            foreach (var item in enemies)
+            {
+                Instantiate(UltraEventsPlugin.Idol, item.transform.position, Quaternion.identity);
+            }
+        }
+
 
 
         // Token: 0x06000061 RID: 97 RVA: 0x00005784 File Offset: 0x00003984
@@ -1719,7 +1774,7 @@ namespace UltraEvents
         }
 
         // Token: 0x06000062 RID: 98 RVA: 0x000057CC File Offset: 0x000039CC
-        [EventDescription("Teleports every enemy behind you")]
+        [EventDescription("Teleports every enemy behind you", requiresEnemies: true)]
         public void TPEnemiesToPlayer()
         {
             this.AnnounceEvent("teleports behind you");

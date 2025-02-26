@@ -20,7 +20,7 @@ namespace UltraEvents.MonoBehaviours.Effects
             this.llewaer.GetComponent<Rigidbody>().isKinematic = true;
             this.llewaer.GetComponent<Collider>().isTrigger = true;
             this.llewaer.AddComponent<Water>();
-            this.llewaer.GetComponent<Water>().bubblesParticle = new GameObject();
+            //this.llewaer.GetComponent<Water>().bub = new GameObject();
             this.llewaer.GetComponent<Water>().clr = new Color(0f, 0.5f, 1f);
             this.llewaer.GetComponent<MeshRenderer>().enabled = false;
             this.llewaer.transform.localScale = Vector3.one * 1E+10f;

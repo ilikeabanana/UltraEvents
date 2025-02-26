@@ -17,7 +17,7 @@ namespace UltraEvents.MonoBehaviours.Effects
 			this.originalFogColor = RenderSettings.fogColor;
 			this.BeginEffect();
 			this.spawns = new DisableEnemySpawns();
-			this.spawns.Enable();
+			this.spawns.Enable(MonoSingleton<CheatsManager>.Instance);
 			Transform transform = Object.FindObjectOfType<FirstRoomPrefab>().transform;
 			EnemyIdentifier[] array = Object.FindObjectsOfType<EnemyIdentifier>();
 			foreach (EnemyIdentifier enemyIdentifier in array)
@@ -34,7 +34,10 @@ namespace UltraEvents.MonoBehaviours.Effects
 			Physics.Raycast(MonoSingleton<NewMovement>.Instance.transform.position + normalized * (float)Random.Range(10, 10), Vector3.down, out raycastHit, 25f, LayerMaskDefaults.Get(LMD.Environment));
 			Vector3 point = raycastHit.point;
 			this.spawnedWicked = Object.Instantiate<GameObject>(UltraEventsPlugin.WickedObject, point, UltraEventsPlugin.WickedObject.transform.rotation);
-		}
+			spawnedWicked.GetComponent<Wicked>().patrolPoints = new Transform[1];
+			spawnedWicked.GetComponent<Wicked>().patrolPoints[0] = MonoSingleton<NewMovement>.Instance.transform;
+
+        }
 
 		// Token: 0x060000C9 RID: 201 RVA: 0x000076C0 File Offset: 0x000058C0
 		public void BeginEffect()

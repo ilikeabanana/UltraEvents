@@ -15,8 +15,7 @@ namespace UltraEvents.Patches
     [HarmonyPatch(typeof(GunControl))]
     internal class OnWeaponSwapTrigger
     {
-        [HarmonyPatch(nameof(GunControl.SwitchVariant))]
-        [HarmonyPatch(nameof(GunControl.SwitchWeapon), new System.Type[] { typeof(int), typeof(List<GameObject>), typeof(bool), typeof(bool), typeof(bool), typeof(bool)})]
+        [HarmonyPatch(nameof(GunControl.SwitchWeapon))]
         public static void Postfix()
         {
             if (!UltraEventsPlugin.WeaponSwap.Value) return;
